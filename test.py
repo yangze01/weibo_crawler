@@ -8,6 +8,9 @@ import pymongo
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+def a():
+    reutrn 1
+    
 class per_struct:
     def __init__(self):
         self.fans_set=set()
