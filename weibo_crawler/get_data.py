@@ -15,11 +15,6 @@ def get_pageNum(data):
     return int(item[38:-4])
 
 def get_fansfollow(catch_url,headers):
-"""
-
-hello
-
-"""
     idnset=set()
     home_page = catch_url+'1'
     data1 = get_data(home_page,headers)
