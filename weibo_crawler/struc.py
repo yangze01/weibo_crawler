@@ -1,3 +1,5 @@
+from collections import deque
+
 class all_url:
     def __init__(self):
         self.userid = 3199208303
