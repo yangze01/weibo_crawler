@@ -1,6 +1,8 @@
+from collections import deque
 import urllib
 import urllib2
 import cookielib
+
 def get_data(this_url,headers):
     req = urllib2.Request(this_url,headers=headers)
     response = urllib2.urlopen(req)
