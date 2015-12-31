@@ -8,7 +8,7 @@ import time
 reload(sys)
 sys.setdefaultencoding('utf-8')
 # Create a new instance of the Chrome driver
-
+  
 def getLoginDriver(username,password):
     driver = webdriver.Chrome()
 
