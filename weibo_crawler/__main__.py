@@ -5,7 +5,7 @@ from struc import *
 from collections import deque
 
 if __name__=="__main__":
-    driver = getLoginDriver(18330274826,523581600)
+    driver = getLoginDriver("","")
     time.sleep(3)
     headers = getHeaders(driver)
 #   init two struct:queue and set
@@ -19,7 +19,7 @@ if __name__=="__main__":
     try:
         while deque:
             catch_id = queue.popleft()#pop the left var
-            
+
 
     except urllib2.URLError,e:
         if hasattr(e,"code"):
