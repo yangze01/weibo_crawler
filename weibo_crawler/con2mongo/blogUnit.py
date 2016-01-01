@@ -6,9 +6,10 @@
 #author: warrior  ,mail: oowarrioroo@163.com
 #data: 2015-12-30
 #log:
+#--- 2016-1-1 : add {"blog_device": ""} into blog_unit, record a blog be sended from what device
 
 """
-    set unit form of blog
+    set unit form of blog 
 """
 
 
@@ -29,6 +30,7 @@ class blogUnit(object):
             "blog_id": "",
             "blog_address": "",
             "blog_time": "",
+            "blog_device": "",
             "blog_content": ""
             },
             "repost": {
