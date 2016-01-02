@@ -131,11 +131,11 @@ class optOnMongo(object):
     def deleteBlog2Mongo(self, dbInstance, delete_blog_condition):
         '''
             description:
-                delete blogs specified delete_blog_unit in dbInstance
+                delete blogs specified delete_blog_condition in dbInstance
 
             input:
                 dbInstance: db instance of mongodb to delete
-                delete_blog_unit: the matched blog
+                delete_blog_condition: the matched blog
 
             output:
                 return statue number: 0:fail; 1:success
@@ -158,7 +158,7 @@ class optOnMongo(object):
     def getBlog2Mongo(self, dbInstance, get_blog_condition, get_blog_unit):
         '''
             description:
-                get blogs specified find_blog_unit in dbInstance
+                get blogs specified get_blog_condition in dbInstance
 
             input:
                 dbInstance: db instance of mongodb to get

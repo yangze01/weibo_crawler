@@ -7,9 +7,11 @@
 #data: 2015-12-30
 #log:
 #--- 2016-1-1 : add {"blog_device": ""} into blog_unit, record a blog be sended from what device
+#               add {"repost_device": ""}, {"repost_time": ""}, {"repost_attitude": ""},
+#               add {"comment_device": ""}, {"comment_time": ""}, {"comment_attitude": ""}, 
 
 """
-    set unit form of blog 
+    set unit form of blog
 """
 
 
@@ -19,9 +21,10 @@
 class blogUnit(object):
     '''
         the form of blog , include:
-        [blog_id, blog_address, blog_time, blog_content],
-        attitude,
-        [repost_id, repost_content], [comment_id, comment_content]
+        [blog_id, blog_address, blog_time, blog_device, blog_content],
+        blog_attitude,
+        [repost_id, repost_content, repost_device, repost_time, repost_attitude],
+        [comment_id, comment_content, comment_device, comment_time, comment_attitude]
     '''
     def __init__(self):
         self.blog_unit = {
@@ -35,11 +38,17 @@ class blogUnit(object):
             },
             "repost": {
             "repost_id": "",
-            "repost_content": ""
+            "repost_content": "",
+            "repost_device": "",
+            "repost_time": "",
+            "repost_attitude": ""
             },
             "comment": {
             "comment_id": "",
-            "comment_content": ""
+            "comment_content": "",
+            "comment_device": "",
+            "comment_time": "",
+            "comment_attitude": ""
             },
-            "attitude": ""
+            "blog_attitude": ""
         }
