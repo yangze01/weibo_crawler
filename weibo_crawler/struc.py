@@ -19,3 +19,11 @@ class per_struct:
         self.follow_set = set()
         self.friends_set = set()
         self.all_set = set()
+class userinfo(object):
+    def __init__(self):
+        self.relation={
+            "fans": "",
+            "follow": "",
+            "union": "",
+            "intersection": ""
+        }
