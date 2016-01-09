@@ -29,6 +29,7 @@ class blogUnit(object):
     def __init__(self):
         self.blog_unit = {
             "user_ID": "",
+            "_id": "",
             "blog": {
                 "blog_id": "",
                 "blog_address": "",
@@ -64,7 +65,7 @@ class blogUnit(object):
                     "time": "",
                     "repost_attitude": ""
                 },
-            ]
+            ],
             "comment": [
                 {
                     "comment_id": "",

@@ -15,6 +15,7 @@ import pymongo
 from pymongo import MongoClient
 import time
 from blogUnit import *
+import pdb
 
 
 
@@ -31,7 +32,7 @@ class optOnMongo(object):
         self.db_name= ''
         self.xlient = ''
         self.db = ''
-        self.blog_unit = ''
+        self.db_opt_blog_unit = ''
 
 
     #-----------------********************-----------------#
@@ -79,16 +80,43 @@ class optOnMongo(object):
         '''
 
         self.db = dbInstance
-        self.blog_unit = blog_unit
+        self.db_opt_blog_unit = blog_unit
+        self.db_opt_old_blog_unit = self.db.blog.find_one({"_id":self.db_opt_blog_unit['_id']})
+        if self.db_opt_old_blog_unit:
+            print 'blog is exist!! update now!!'
+            self.updataBlog2Mongo(self.db, self.db_opt_old_blog_unit, self.db_opt_blog_unit)
+        else:
+            try:
+                #del self.db_opt_blog_unit['_id']
+                self.result = self.db.blog.insert_one(self.db_opt_blog_unit)
+                print self.result.inserted_id
+                self.db.blog.find(self.db_opt_blog_unit)
+                print "insert success!!"
+                return 1
+            except :
+                print "insert failure!!"
+                return 0
 
-        try:
-            self.db.blog.insert(self.blog_unit)
-            self.db.blog.find(self.blog_unit)
-            print "insert success!!"
-            return 1
-        except :
-            print "insert failure!!"
-            return 0
+
+
+    #-----------------********************-----------------#
+    def insertBlogs2Mongo(self, dbInstance, blog_unit_list):
+        '''
+            description:
+                insert a blog_unit to mongodb
+
+            input:
+                dbInstance: instance of mongodb to insert
+                blog_unit_list: blog units to be inserted
+
+            output:
+                return statue number: 0:fail; 1:success
+        '''
+
+        self.db = dbInstance
+        self.db_opt_blog_unit_list = blog_unit_list
+        for self.db_opt_blog_unit in self.db_opt_blog_unit_list:
+            self.insertBlog2Mongo(self.db, self.db_opt_blog_unit)
 
 
     #-----------------********************-----------------#
@@ -175,15 +203,15 @@ class optOnMongo(object):
         self.blog_number = 0
         try:
             self.result = self.db.blog.find(self.get_blog_condition)
-            for self.blog_unit in self.result :
+            for self.db_opt_blog_unit in self.result :
                 self.blog_number += 1
-                self.get_blog_unit.append(self.blog_unit)
+                self.get_blog_unit.append(self.db_opt_blog_unit)
 
-            get_blog_unit = self.get_blog_unit
+            ##get_blog_unit = self.get_blog_unit
             print "get blog count: %d" % self.blog_number
-            print self.get_blog_unit
+            ##print self.get_blog_unit
             print "get blog success!!"
-            return 1
+            return self.get_blog_unit
         except :
             print "get blog failure!!"
             return 0
