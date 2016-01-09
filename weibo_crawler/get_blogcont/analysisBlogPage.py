@@ -112,7 +112,7 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         self.db_name = "lab"
         self.optOnMongoInstance.connect2Mongo(self.db_uri, self.db_name)
         print self.optOnMongoInstance.db
-        self.user_id = '2631208437'
+        self.user_id = '1464484735'
         self.visitIntoUserBlog(self.sinaNetHeader, self.user_id, self.optOnMongoInstance)
         print self.getBlogsCount
         #for self.user_id in self.user_id_list:
@@ -277,22 +277,19 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         self.comment_url['comment_url'] = self.blogCommentUrlPattern.findall(self.patternContTamp)[0]
         ##print "comment_url :%s" % self.oneBlogAllContentDict['comment_url']
         #get comment
-        ##self.CommentsContentDict = analisysAttributePage.getBlogAttributes(self, self.sinaNetHeader, self.comment_url['comment_url'], 1)
+        self.CommentsContentDict = analisysAttributePage.getBlogAttributes(self, self.sinaNetHeader, self.comment_url['comment_url'], 1)
         #get repost
-        ##self.RepostsContentDict = analisysAttributePage.getBlogAttributes(self, self.sinaNetHeader, self.repost_url['repost_url'], 2)
+        self.RepostsContentDict = analisysAttributePage.getBlogAttributes(self, self.sinaNetHeader, self.repost_url['repost_url'], 2)
 
         self.blog_unit['blog'] = self.oneBlogAllContentDict
         self.blog_unit['_id'] = self.blog_unit['blog']['blog_id']
-        ##self.blog_unit['repost'] = self.RepostsContentDict
-        ##self.blog_unit['comment'] = self.CommentsContentDict
+        self.blog_unit['repost'] = self.RepostsContentDict
+        self.blog_unit['comment'] = self.CommentsContentDict
         self.blog_unit['user_ID'] = self.user_id
         ##print self.RepostsContentDict
         ##print self.CommentsContentDict
 
-        self.blog_unit_tamp = self.blog_unit
-
         self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.blog_unit)
         self.getBlogsCount = self.getBlogsCount + 1
         ##del self.blog_unit['_id']
-        print self.blog_unit_tamp
         return self.blog_unit

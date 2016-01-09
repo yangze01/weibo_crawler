@@ -121,10 +121,10 @@ class analisysAttributePage(object):
     def getPageNumber(self, webPage):
         '''
             description:
-                visit into blog page  ,and get blog page number
+                 get web page number
             input:
-                fileDir:
-                    file to be readed
+                webPage:
+                    content of webPage
             output:
                 none
         '''
@@ -154,7 +154,7 @@ class analisysAttributePage(object):
                     2 : for repost
                     others : error
             output:
-                none
+                self.commentsMainDict/self.repostsMainDict/None
         '''
         self.sinaNetHeader = sinaNetHeader
         self.blogAttributeUrl = blogAttributeUrl
@@ -188,12 +188,15 @@ class analisysAttributePage(object):
                                             self.oneAttributeAllContentPattern, \
                                             self.statueFlag)
                     self.getSubDict2MainDict(self.commentsSubDict, self.commentsMainDict)
-                else : #for repost
+                elif self.statueFlag==2: #for repost
                     self.oneAttributeAllContentPattern = re.compile("""(?<=<div class="c">)<a href="/u/.*?(?=</span></div>)""")
                     self.repostsSubDict = self.getOnePageAttributes(self.blogAttributePage, \
                                             self.oneAttributeAllContentPattern, \
                                             self.statueFlag)
                     self.getSubDict2MainDict(self.repostsSubDict, self.repostsMainDict)
+                else:
+                    print "please input statueFlag 1:for commont 2:for repost"
+                    return None
         else:
             if self.statueFlag==1: #for comment
                 self.oneAttributeAllContentPattern = re.compile("""(?<=<div class="c" id=)"C_\w+">.*?(?=</span></div>)""")
@@ -201,26 +204,35 @@ class analisysAttributePage(object):
                                         self.oneAttributeAllContentPattern, \
                                         self.statueFlag)
                 self.getSubDict2MainDict(self.commentsSubDict, self.commentsMainDict)
-            else : #for repost
+            elif self.statueFlag==2: #for repost
                 self.oneAttributeAllContentPattern = re.compile("""(?<=<div class="c">)<a href="/u/.*?(?=</span></div>)""")
                 self.repostsSubDict = self.getOnePageAttributes(self.blogAttributePage, \
                                         self.oneAttributeAllContentPattern, \
                                         self.statueFlag)
                 self.getSubDict2MainDict(self.repostsSubDict, self.repostsMainDict)
+            else:
+                print "please input statueFlag 1:for commont 2:for repost"
+                return None
         if self.statueFlag==1:
             return self.commentsMainDict
         elif self.statueFlag==2:
             return self.repostsMainDict
+        else:
+            print "please input statueFlag 1:for commont 2:for repost"
+            return None
 
     #-----------------********************-----------------#
     def getSubDict2MainDict(self, subDict, mainDict):
         '''
             description:
-                none
+                assemble sub dictionary list into main dictionary list
             input:
-                none
+                subDict:
+                    sub dictionary list
+                mainDict:
+                    main dictionary list
             output:
-                none
+                self.mainDict
         '''
         self.subDict = subDict
         self.mainDict = mainDict
@@ -235,10 +247,15 @@ class analisysAttributePage(object):
             description:
                 get all attributes from the loaded attribute page attributeDir:"./get_blogcont/currentBlogAttributePage.html"
             input:
-                attributeDir:
-                    attribute page file dir
+                blogAttributePage:
+                    attribute web page
+                oneAttributeAllContentPattern:
+                    re pattern for attribute of blog comment/repost
+                statueFlag:
+                    1:for comment
+                    2:for repost
             output:
-                none
+                self.repostsSubDic/self.commentsSubDict/None
         '''
 
         ##self.attributeDir = attributeDir
@@ -252,15 +269,23 @@ class analisysAttributePage(object):
                 for self.oneAttributeAllContent in self.oneAttributeAllContentPattern.findall(self.attributePageText):
                     self.commentsSubDict.append(self.getOneComment(self.oneAttributeAllContent))
                 return self.commentsSubDict
-            else : #for repost
+            elif self.statueFlag==2: #for repost
                 for self.oneAttributeAllContent in self.oneAttributeAllContentPattern.findall(self.attributePageText):
                     self.repostsSubDict.append(self.getOneRepost(self.oneAttributeAllContent))
                 return self.repostsSubDict
+            else:
+                print "please input statueFlag 1:for commont 2:for repost"
+                return None
         else :
             if self.statueFlag==1:
                 print "no comment !!"
-            else :
+                return None
+            elif self.statueFlag==2 :
                 print "no repost !!"
+                return None
+            else:
+                print "please input statueFlag 1:for commont 2:for repost"
+                return None
 
     #-----------------********************-----------------#
     def getOneComment(self, oneCommentAllContent):
@@ -371,10 +396,14 @@ class analisysAttributePage(object):
             description:
                 get one time and device from the oneTimeDeviceContent
             input:
-                oneTimeDeviceContent:
-                    a string contain time and device content
+                oneContentDict:
+                    a dictionary data form for blog/comment/repost
+                oneAllContent:
+                    all content of blog/comment/repost
+                oneTimeDevicePattern:
+                    re pattern for blog/comment/repost time and device
             output:
-                none
+                self.oneContentDict['time'], self.oneContentDict['device']
         '''
         self.oneTimeDevicePattern = oneTimeDevicePattern
         self.oneAllContent = oneAllContent
