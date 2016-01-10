@@ -69,6 +69,8 @@ class analisysAttributePage(object):
         self.commentsMainDict = []
         self.repostsSubDict = []
         self.commentsSubDict = []
+        self.RepostsContentDict = []
+        self.CommentsContentDict = []
         self.subDict = []
         self.mainDict = []
         self.countNum = ''
@@ -175,8 +177,8 @@ class analisysAttributePage(object):
         else :
             print "please set statueFlag at correct value '1:comment' and '2:repost'"
             return None
-        if self.attributePageNumber > 0 :
-            for self.countNum in range(self.attributePageNumber):
+        if self.attributePageNumber > 1 :
+            for self.countNum in range(2):#self.attributePageNumber):
                 self.countNum = self.countNum + 1
                 self.currentBlogAttributePageUrl = self.blogAttributeUrl + "&page=%d" % self.countNum
                 self.req = urllib2.Request(self.currentBlogAttributePageUrl,headers=self.sinaNetHeader)
@@ -186,14 +188,16 @@ class analisysAttributePage(object):
                     self.oneAttributeAllContentPattern = re.compile("""(?<=<div class="c" id=)"C_\w+">.*?(?=</span></div>)""")
                     self.commentsSubDict = self.getOnePageAttributes(self.blogAttributePage, \
                                             self.oneAttributeAllContentPattern, \
-                                            self.statueFlag)
+                                            1)
                     self.getSubDict2MainDict(self.commentsSubDict, self.commentsMainDict)
                 elif self.statueFlag==2: #for repost
+                    print self.currentBlogAttributePageUrl
                     self.oneAttributeAllContentPattern = re.compile("""(?<=<div class="c">)<a href="/u/.*?(?=</span></div>)""")
                     self.repostsSubDict = self.getOnePageAttributes(self.blogAttributePage, \
                                             self.oneAttributeAllContentPattern, \
-                                            self.statueFlag)
-                    self.getSubDict2MainDict(self.repostsSubDict, self.repostsMainDict)
+                                            2)
+
+                    self.repostsMainDict = self.getSubDict2MainDict(self.repostsSubDict, self.repostsMainDict)
                 else:
                     print "please input statueFlag 1:for commont 2:for repost"
                     return None
@@ -202,20 +206,27 @@ class analisysAttributePage(object):
                 self.oneAttributeAllContentPattern = re.compile("""(?<=<div class="c" id=)"C_\w+">.*?(?=</span></div>)""")
                 self.commentsSubDict = self.getOnePageAttributes(self.blogAttributePage, \
                                         self.oneAttributeAllContentPattern, \
-                                        self.statueFlag)
+                                        1)
+                ##self.commentsMainDict = self.commentsMainDict
                 self.getSubDict2MainDict(self.commentsSubDict, self.commentsMainDict)
             elif self.statueFlag==2: #for repost
+                print self.blogAttributeUrl
                 self.oneAttributeAllContentPattern = re.compile("""(?<=<div class="c">)<a href="/u/.*?(?=</span></div>)""")
                 self.repostsSubDict = self.getOnePageAttributes(self.blogAttributePage, \
                                         self.oneAttributeAllContentPattern, \
-                                        self.statueFlag)
-                self.getSubDict2MainDict(self.repostsSubDict, self.repostsMainDict)
+                                        2)
+                ##self.repostsMainDict = self.repostsSubDict
+                self.repostsMainDict = self.getSubDict2MainDict(self.repostsSubDict, self.repostsMainDict)
             else:
                 print "please input statueFlag 1:for commont 2:for repost"
                 return None
         if self.statueFlag==1:
+            ##self.CommentsContentDict = self.commentsMainDict
             return self.commentsMainDict
         elif self.statueFlag==2:
+            ##print self.repostsMainDict
+            ##print "这里还有呢！！"
+            ##self.RepostsContentDict = self.repostsMainDict
             return self.repostsMainDict
         else:
             print "please input statueFlag 1:for commont 2:for repost"
@@ -236,9 +247,18 @@ class analisysAttributePage(object):
         '''
         self.subDict = subDict
         self.mainDict = mainDict
+        self.oneItem = {}
         if self.subDict:
             for self.oneItem in self.subDict:
-                self.mainDict.append(self.oneItem)
+                oneDictTamp = {}
+                for keyTamp,valueTamp in self.oneItem.items():
+                    if keyTamp == "content":
+                        oneDictTamp["content"] = {}
+                        for keyTamp2,valueTamp2 in valueTamp.items():
+                            oneDictTamp["content"][keyTamp2] = valueTamp2
+                    else:
+                        oneDictTamp[keyTamp] = valueTamp
+                self.mainDict.append(oneDictTamp)
         return self.mainDict
 
     #-----------------********************-----------------#
@@ -260,18 +280,38 @@ class analisysAttributePage(object):
 
         ##self.attributeDir = attributeDir
         self.oneAttributeAllContentPattern = oneAttributeAllContentPattern
-        self.commentsSubDict = []
-        self.repostsSubDict = []
 
         self.attributePageText = blogAttributePage
         if self.oneAttributeAllContentPattern.findall(self.attributePageText) :
             if self.statueFlag==1: #for comment
+                self.commentsSubDict = []
                 for self.oneAttributeAllContent in self.oneAttributeAllContentPattern.findall(self.attributePageText):
-                    self.commentsSubDict.append(self.getOneComment(self.oneAttributeAllContent))
+                    oneDictTamp = {}
+                    for keyTamp,valueTamp in self.getOneComment(self.oneAttributeAllContent).items():
+                        if keyTamp == "content":
+                            oneDictTamp["content"] = {}
+                            for keyTamp2,valueTamp2 in valueTamp.items():
+                                oneDictTamp["content"][keyTamp2] = valueTamp2
+                        else:
+                            oneDictTamp[keyTamp] = valueTamp
+                    ##print oneDictTamp
+                    ##print '########################################################'
+                    self.commentsSubDict.append(oneDictTamp)
+                ##print self.commentsSubDict
+                ##print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
                 return self.commentsSubDict
             elif self.statueFlag==2: #for repost
+                self.repostsSubDict = []
                 for self.oneAttributeAllContent in self.oneAttributeAllContentPattern.findall(self.attributePageText):
-                    self.repostsSubDict.append(self.getOneRepost(self.oneAttributeAllContent))
+                    oneDictTamp = {}
+                    for keyTamp,valueTamp in self.getOneRepost(self.oneAttributeAllContent).items():
+                        if keyTamp == "content":
+                            oneDictTamp["content"] = {}
+                            for keyTamp2,valueTamp2 in valueTamp.items():
+                                oneDictTamp["content"][keyTamp2] = valueTamp2
+                        else:
+                            oneDictTamp[keyTamp] = valueTamp
+                    self.repostsSubDict.append(oneDictTamp)
                 return self.repostsSubDict
             else:
                 print "please input statueFlag 1:for commont 2:for repost"
@@ -279,10 +319,12 @@ class analisysAttributePage(object):
         else :
             if self.statueFlag==1:
                 print "no comment !!"
-                return None
+                self.commentsSubDict = []
+                return self.commentsSubDict
             elif self.statueFlag==2 :
-                print "no repost !!"
-                return None
+                print "no repost lala!!"
+                self.repostsSubDict = []
+                return self.repostsSubDict
             else:
                 print "please input statueFlag 1:for commont 2:for repost"
                 return None
@@ -413,7 +455,9 @@ class analisysAttributePage(object):
         ##print self.patternContTamp
         self.oneTimePattern = re.compile(""".*?(?=&nbsp;)""")
         self.oneContentDict['time'] = self.oneTimePattern.findall(self.patternContTamp)[0]
+        ##print self.oneContentDict['time']
         self.oneContentDict['time'] = self.normalizeTimeFrom(self.oneContentDict['time'])
+        ##print self.oneContentDict['time']
         ##print "time :%s" % oneContentDict['time'].encode('utf-8')
         self.oneDevicePattern = re.compile("""(?<=&nbsp;来自).*""")
         if self.oneDevicePattern.findall(self.patternContTamp): #whether have device
@@ -455,6 +499,10 @@ class analisysAttributePage(object):
         if self.oneTimePattern.findall(self.initTimeForm):
             self.TimeFormFlag = 3
             self.initTimeForm = self.oneTimePattern.findall(self.initTimeForm)[0]
+        self.oneTimePattern = re.compile("""(?<=今天).*""")
+        if self.oneTimePattern.findall(self.initTimeForm):
+            self.TimeFormFlag = 6
+            self.initTimeForm = self.oneTimePattern.findall(self.initTimeForm)[0]
         self.oneTimePattern = re.compile("""(?<=昨天).*""")
         if self.oneTimePattern.findall(self.initTimeForm):
             self.TimeFormFlag = 4
@@ -475,10 +523,12 @@ class analisysAttributePage(object):
         self.oneTimePattern = re.compile(""".*-.*-.*""")
         if self.oneTimePattern.findall(self.initTimeForm):
             self.TimeFormFlag = 5
+
         self.normalizeTimeDict = {
             1 : lambda initTimeForm: time.strftime( self.ISOTIMEFORMAT, time.localtime() ),
             2 : lambda minuts: time.strftime( self.ISOTIMEFORMAT, time.localtime( time.time() - int(minuts)*60) ),
             3 : lambda hours: time.strftime( self.ISOTIMEFORMAT, time.localtime( time.time() - int(hours)*60*60) ),
+            6 : lambda initTimeForm: '%s' % datetime.date.today() +  initTimeForm + ':01',
             4 : lambda initTimeForm: '%s ' % (datetime.date.today() - self.oneday) +  initTimeForm + ':01',
             5 : lambda initTimeForm: initTimeForm
         }

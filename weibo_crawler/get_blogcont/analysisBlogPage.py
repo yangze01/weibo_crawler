@@ -107,12 +107,13 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         '''
 
         self.user_id_list = user_id_list
-        self.sinaNetHeader = getHeaders(getLoginDriver('username', 'pw'))
+        self.sinaNetHeader = getHeaders(getLoginDriver('15933533880','675979'))
+        #'18330274826', '523581600'
         self.db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=lab"
         self.db_name = "lab"
         self.optOnMongoInstance.connect2Mongo(self.db_uri, self.db_name)
         print self.optOnMongoInstance.db
-        self.user_id = '1464484735'
+        self.user_id = '1991303247'
         self.visitIntoUserBlog(self.sinaNetHeader, self.user_id, self.optOnMongoInstance)
         print self.getBlogsCount
         #for self.user_id in self.user_id_list:
@@ -149,7 +150,7 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         print "blog page number: %d" % self.blogPageNumber
         ##self.getOnePageBlogs('./get_blogcont/currentBlogPage.html')
         if self.blogPageNumber > 0:
-            for self.countNum in range(4):#(self.blogPageNumber):
+            for self.countNum in range(2):#(self.blogPageNumber):
                 self.countNum = self.countNum+1
                 self.blogCurrentPageUrl = self.blogInitPageUrl + "?page=" + "%d" % self.countNum
                 print self.blogCurrentPageUrl
@@ -191,7 +192,10 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         self.oneBlogAllContentPattern = re.compile("""(?<=<div class="c" id=)"M_\w+"><div><span class="ctt">.*?(?=</div></div>)""")
         if self.oneBlogAllContentPattern.findall(self.blogText):
             for self.oneBlogAllContent in self.oneBlogAllContentPattern.findall(self.blogText):
-                self.getOneBlog(self.oneBlogAllContent, self.optOnMongoInstance)##self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.getOneBlog(self.oneBlogAllContent))
+                self.blog_unit = self.getOneBlog(self.oneBlogAllContent, self.optOnMongoInstance)##self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.getOneBlog(self.oneBlogAllContent))
+                ##print self.blog_unit
+                self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.blog_unit)
+                self.getBlogsCount = self.getBlogsCount + 1
         else:
             print "no blog"
         ##self.blogPageFD.close()
@@ -277,10 +281,12 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         self.comment_url['comment_url'] = self.blogCommentUrlPattern.findall(self.patternContTamp)[0]
         ##print "comment_url :%s" % self.oneBlogAllContentDict['comment_url']
         #get comment
+        self.CommentsContentDict = []
         self.CommentsContentDict = analisysAttributePage.getBlogAttributes(self, self.sinaNetHeader, self.comment_url['comment_url'], 1)
         #get repost
+        self.RepostsContentDict = [1]
         self.RepostsContentDict = analisysAttributePage.getBlogAttributes(self, self.sinaNetHeader, self.repost_url['repost_url'], 2)
-
+        ##print self.RepostsContentDict
         self.blog_unit['blog'] = self.oneBlogAllContentDict
         self.blog_unit['_id'] = self.blog_unit['blog']['blog_id']
         self.blog_unit['repost'] = self.RepostsContentDict
@@ -289,7 +295,5 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         ##print self.RepostsContentDict
         ##print self.CommentsContentDict
 
-        self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.blog_unit)
-        self.getBlogsCount = self.getBlogsCount + 1
         ##del self.blog_unit['_id']
         return self.blog_unit
