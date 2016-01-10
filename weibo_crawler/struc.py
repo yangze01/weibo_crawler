@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 from collections import deque
 
 class all_url:
@@ -19,6 +20,7 @@ class per_struct:
         self.follow_set = set()
         self.friends_set = set()
         self.all_set = set()
+
 class userinfo(object):
     def __init__(self):
         self.relation={
@@ -26,4 +28,13 @@ class userinfo(object):
             "follow": "",
             "union": "",
             "intersection": ""
+        }
+        self.info={
+            "username":"",
+            "sex":"",
+            "district":"",
+            "birthday":"",
+            "certificate":"",
+            "viplevel":""
+
         }

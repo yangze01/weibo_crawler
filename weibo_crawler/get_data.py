@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 from collections import deque
 import urllib
 import urllib2
@@ -8,6 +9,10 @@ def get_data(this_url,headers):
     response = urllib2.urlopen(req)
     data = response.read()
     return data
+
+def get_userinfo(data):
+    re_allinfo='<div class="c">.*?<br></div>'
+
 
 def get_pageNum(data):
     re_pagenum = '<input name="mp" type="hidden" value=.*?>'
