@@ -107,8 +107,8 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         '''
 
         self.user_id_list = user_id_list
-        self.sinaNetHeader = getHeaders(getLoginDriver('15933533880','675979'))
-        #'18330274826', '523581600'
+        self.sinaNetHeader = getHeaders(getLoginDriver('usename', 'password'))
+        
         self.db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=lab"
         self.db_name = "lab"
         self.optOnMongoInstance.connect2Mongo(self.db_uri, self.db_name)
