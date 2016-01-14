@@ -1,7 +1,7 @@
 #-*- coding: UTF-8 -*-
 from get_data import *
 from login import *
-from struc import *
+from user_unit import *
 from collections import deque
 
 if __name__=="__main__":
@@ -26,6 +26,7 @@ if __name__=="__main__":
             print tmp_userinfo.info
             tmp_userinfo.relation = get_relation(catch_id,headers)
             queue = tmp_userinfo.relation["intersection"]+queue
+            print queue
     except urllib2.URLError,e:
         if hasattr(e,"code"):
             print e.code

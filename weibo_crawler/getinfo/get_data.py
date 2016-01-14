@@ -15,8 +15,11 @@ def get_pageNum(data):
     pattern = re.compile(re_pagenum,re.S)
     items = re.findall(pattern,data)
     print items
-    item=items[0]
-    return int(item[38:-4])
+    if items:
+        item=items[0]
+        return int(item[38:-4])
+    else:
+        return 1
 
 def get_fans(userid,headers):
     catch_url = "http://weibo.cn/"+userid+"/fans?page="
