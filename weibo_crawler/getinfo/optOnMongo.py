@@ -2,19 +2,19 @@
 #-*- coding: UTF-8 -*-
 
 #filename: optOnMongo.py
-#description: set interface for operations on blog data to pymongo
+#description: set interface for operations on user data to pymongo
 #author: warrior  ,mail: oowarrioroo@163.com
 #data: 2015-12-31
 #log:
 
 """
-    set interface for operations on blog data to pymongo
+    set interface for operations on user data to pymongo
 """
 
 import pymongo
 from pymongo import MongoClient
 import time
-from blogUnit import *
+from userUnit import *
 import pdb
 
 
@@ -32,7 +32,7 @@ class optOnMongo(object):
         self.db_name= ''
         self.xlient = ''
         self.db = ''
-        self.db_opt_user_user_unit = ''
+        self.db_opt_user_unit = ''
 
 
     #-----------------********************-----------------#
@@ -66,7 +66,7 @@ class optOnMongo(object):
 
 
     #-----------------********************-----------------#
-    def insertBlog2Mongo(self, dbInstance, user_unit):
+    def insertUser2Mongo(self, dbInstance, user_unit):
         '''
             description:
                 insert a user_unit to mongodb
@@ -81,17 +81,17 @@ class optOnMongo(object):
 
         self.db = dbInstance
         self.db_opt_user_unit = user_unit
-        self.db_opt_old_user_unit = self.db.user.find_one({"_id":self.db_opt_blog_unit['_id']})
-        if self.db_opt_old_blog_unit:
-            print 'blog is exist!! update now!!'
-            self.updataBlog2Mongo(self.db, self.db_opt_old_blog_unit, self.db_opt_blog_unit)
+        self.db_opt_old_user_unit = self.db.user.find_one({"_id":self.db_opt_user_unit['_id']})
+        if self.db_opt_old_user_unit:
+            print 'user is exist!! update now!!'
+            self.updataUser2Mongo(self.db, self.db_opt_old_user_unit, self.db_opt_user_unit)
         else:
 
             try:
-                #del self.db_opt_blog_unit['_id']
-                self.result = self.db.blog.insert_one(self.db_opt_blog_unit)
+                #del self.db_opt_user_unit['_id']
+                self.result = self.db.user.insert_one(self.db_opt_user_unit)
                 print self.result.inserted_id
-                self.db.blog.find(self.db_opt_blog_unit)
+                self.db.user.find(self.db_opt_user_unit)
                 print "insert success!!"
                 return 1
             except :
@@ -101,35 +101,35 @@ class optOnMongo(object):
 
 
     #-----------------********************-----------------#
-    def insertBlogs2Mongo(self, dbInstance, blog_unit_list):
+    def insertUsers2Mongo(self, dbInstance, user_unit_list):
         '''
             description:
-                insert a blog_unit to mongodb
+                insert a user_unit to mongodb
 
             input:
                 dbInstance: instance of mongodb to insert
-                blog_unit_list: blog units to be inserted
+                user_unit_list: user units to be inserted
 
             output:
                 return statue number: 0:fail; 1:success
         '''
 
         self.db = dbInstance
-        self.db_opt_blog_unit_list = blog_unit_list
-        for self.db_opt_blog_unit in self.db_opt_blog_unit_list:
-            self.insertBlog2Mongo(self.db, self.db_opt_blog_unit)
+        self.db_opt_user_unit_list = user_unit_list
+        for self.db_opt_user_unit in self.db_opt_user_unit_list:
+            self.insertUser2Mongo(self.db, self.db_opt_user_unit)
 
 
     #-----------------********************-----------------#
-    def updataBlog2Mongo(self, dbInstance, old_blog_unit, new_blog_unit):
+    def updataUser2Mongo(self, dbInstance, old_user_unit, new_user_unit):
         '''
             description:
-                updata the old_blog_unit to new_blog_unit on mongodb
+                updata the old_user_unit to new_user_unit on mongodb
 
             input:
                 dbInstance: instance of mongodb to updata
-                old_blog_unit: old blog unit content
-                new_blog_unit: new bolg unit content to updata into mongodb
+                old_user_unit: old user unit content
+                new_user_unit: new user unit content to updata into mongodb
 
             output:
                 return statue number: 0:fail; 1:success
@@ -137,16 +137,16 @@ class optOnMongo(object):
 
         self.db = dbInstance
 
-        self.old_blog_unit = old_blog_unit
-        self.new_blog_unit = new_blog_unit
+        self.old_user_unit = old_user_unit
+        self.new_user_unit = new_user_unit
 
         try:
 
-            self.result = self.db.blog.replace_one(
-                self.old_blog_unit,
-                self.new_blog_unit
+            self.result = self.db.user.replace_one(
+                self.old_user_unit,
+                self.new_user_unit
             )
-            #self.db.blog.find(self.new_blog_unit)
+            #self.db.user.find(self.new_user_unit)
             print "updata success!!"
             print "matched count: %d" % self.result.matched_count
             print "modified count: %d" % self.result.modified_count
@@ -157,24 +157,24 @@ class optOnMongo(object):
 
 
     #-----------------********************-----------------#
-    def deleteBlog2Mongo(self, dbInstance, delete_blog_condition):
+    def deleteUser2Mongo(self, dbInstance, delete_user_condition):
         '''
             description:
-                delete blogs specified delete_blog_condition in dbInstance
+                delete users specified delete_user_condition in dbInstance
 
             input:
                 dbInstance: db instance of mongodb to delete
-                delete_blog_condition: the matched blog
+                delete_user_condition: the matched user
 
             output:
                 return statue number: 0:fail; 1:success
         '''
 
         self.db = dbInstance
-        self.delete_blog_condition = delete_blog_condition
+        self.delete_user_condition = delete_user_condition
 
         try:
-            self.result = self.db.blog.delete_one(self.delete_blog_condition)
+            self.result = self.db.user.delete_one(self.delete_user_condition)
             #print "delete matced count: %" % self.result.matched_count
             print "delete count: %d" % self.result.deleted_count
             print "delete success!!"
@@ -184,35 +184,35 @@ class optOnMongo(object):
             return 0
 
     #-----------------********************-----------------#
-    def getBlog2Mongo(self, dbInstance, get_blog_condition, get_blog_unit):
+    def getUser2Mongo(self, dbInstance, get_user_condition, get_user_unit):
         '''
             description:
-                get blogs specified get_blog_condition in dbInstance
+                get users specified get_user_condition in dbInstance
 
             input:
                 dbInstance: db instance of mongodb to get
-                get_blog_condition: the matched blog condition
-                get_blog_unit: storage the blogs matched condition
+                get_user_condition: the matched user condition
+                get_user_unit: storage the users matched condition
 
             output:
                 return statue number: 0:fail; 1:success
         '''
 
         self.db = dbInstance
-        self.get_blog_condition = get_blog_condition
-        self.get_blog_unit = []
-        self.blog_number = 0
+        self.get_user_condition = get_user_condition
+        self.get_user_unit = []
+        self.user_number = 0
         try:
-            self.result = self.db.blog.find(self.get_blog_condition)
-            for self.db_opt_blog_unit in self.result :
-                self.blog_number += 1
-                self.get_blog_unit.append(self.db_opt_blog_unit)
+            self.result = self.db.user.find(self.get_user_condition)
+            for self.db_opt_user_unit in self.result :
+                self.user_number += 1
+                self.get_user_unit.append(self.db_opt_user_unit)
 
-            ##get_blog_unit = self.get_blog_unit
-            print "get blog count: %d" % self.blog_number
-            ##print self.get_blog_unit
-            print "get blog success!!"
-            return self.get_blog_unit
+            ##get_user_unit = self.get_user_unit
+            print "get user count: %d" % self.user_number
+            ##print self.get_user_unit
+            print "get user success!!"
+            return self.get_user_unit
         except :
-            print "get blog failure!!"
+            print "get user failure!!"
             return 0

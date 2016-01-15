@@ -4,13 +4,29 @@ import urllib
 import urllib2
 import cookielib
 import re
-from struc import *
+from user_unit import *
 def get_data(this_url,headers):
+    '''description:
+            get data from webpage
+        input:
+            this_url:the page to be crawler
+            headers:the headers of a sina_weibo cookie
+        output:
+            the page data
+    '''
     req = urllib2.Request(this_url,headers=headers)
     response = urllib2.urlopen(req)
     data = response.read()
     return data
 def get_pageNum(data):
+    '''
+    description:
+        get the weibo,fans,follow page number
+    input:
+        data:the page data
+    output:
+        return the page number
+    '''
     re_pagenum = '<input name="mp" type="hidden" value=.*?>'
     pattern = re.compile(re_pagenum,re.S)
     items = re.findall(pattern,data)
@@ -22,6 +38,13 @@ def get_pageNum(data):
         return 1
 
 def get_fans(userid,headers):
+    '''
+    description:
+        get user's fans list
+    input:
+        userid:the user's id
+        headers:the headers of a sina_weibo cookie
+    '''
     catch_url = "http://weibo.cn/"+userid+"/fans?page="
     idnset = set()
     home_page = catch_url+'1'
@@ -40,6 +63,13 @@ def get_fans(userid,headers):
     return idnset
 
 def get_follow(userid,headers):
+    '''
+    description:
+        get user's follow set
+    input:
+        userid:the user's id
+        headers:the headers of a sina_weibo cookie
+    '''
     catch_url = "http://weibo.cn/"+userid+"/follow?page="
     idnset=set()
     home_page = catch_url+'1'
@@ -59,27 +89,64 @@ def get_follow(userid,headers):
 
 
 def get_friends(fansset,followset):
+    '''
+    description:
+        get the union set of fansset and followset
+    input:
+        fansset:the user's fans set
+        followset:the user's follow set
+    output:
+        return the union of fansset and followset
+    '''
     return fansset&followset
 def get_all(fansset,followset):
+    '''
+    description:
+        get the intersection of fansset and followset
+    input:
+        fansset:the user's fans set
+        followset:the user's follow set
+    output:
+        return the intersection of fansset and followset
+    '''
     return fansset|followset
 
 def get_relation(userid,headers):
-    tmp_userinfo = userinfo()
+    '''
+    description:
+        get the user's relation
+    input:
+        userid:the user's id
+        headers:the headers of a sina_weibo cookie
+    output:
+        return a dict of relation
+    '''
+    relation = dict()
     fans_set = get_fans(userid,headers)
     follow_set = get_follow(userid,headers)
 
     all_set = get_friends(fans_set,follow_set)
     friends_set = get_all(fans_set,follow_set)
 
-    tmp_userinfo.relation["fans"]=list(fans_set)
-    tmp_userinfo.relation["follow"]=list(follow_set)
-    tmp_userinfo.relation["union"]=list(all_set)
-    tmp_userinfo.relation["intersection"]=list(friends_set)
-    return tmp_userinfo.relation
+    relation["fans"]=list(fans_set)
+    relation["follow"]=list(follow_set)
+    relation["union"]=list(all_set)
+    relation["intersection"]=list(friends_set)
+    return relation
 
 def get_userinfo(userid,headers):
+    '''
+    description:
+        get the user's relation
+    input:
+        userid:the user's id
+        headers:the headers of a sina_weibo cookie
+    output:
+        return a dict of userinfo
+    '''
+
+    userinfo=dict()
     this_url = "http://weibo.cn/"+userid+"/info"
-    userdata = userinfo()
     data = get_data(this_url,headers)
 
     re_allinfo='<div class="c">.*?<br/></div>'
@@ -104,17 +171,18 @@ def get_userinfo(userid,headers):
     #if re.match(pat_vip,item):
     #    print re.findall(pat_vip,item)[0]
     if re.findall(pat_vip,item):
-        userdata.info["vip"] = re.findall(pat_vip,item)[0]
+        userinfo["vip"] = re.findall(pat_vip,item)[0]
     if re.findall(pat_username,item):
-        userdata.info["username"] = re.findall(pat_username,item)[0]
+        userinfo["username"] = re.findall(pat_username,item)[0]
     if re.findall(pat_certificate,item):
-        userdata.info["certificate"] = re.findall(pat_certificate,item)[0]
+        userinfo["certificate"] = re.findall(pat_certificate,item)[0]
     if re.findall(pat_sex,item):
-        userdata.info["sex"] = re.findall(pat_sex,item)[0]
+        userinfo["sex"] = re.findall(pat_sex,item)[0]
     if re.findall(pat_district,item):
-        userdata.info["district"] = re.findall(pat_district,item)[0]
+        userinfo["district"] = re.findall(pat_district,item)[0]
     if re.findall(pat_birthday,item):
-        userdata.info["birthday"] = re.findall(pat_birthday,item)[0]
+        userinfo["birthday"] = re.findall(pat_birthday,item)[0]
     if re.findall(pat_certimes,item):
-        userdata.info["certimes"] = re.findall(pat_certimes,item)[0]
-    return userdata.info
+        userinfo["certimes"] = re.findall(pat_certimes,item)[0]
+    print userinfo
+    return userinfo
