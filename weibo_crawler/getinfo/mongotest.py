@@ -3,11 +3,11 @@ from get_data import *
 from login import *
 from user_unit import *
 from collections import deque
-from con2mongo.blogUnit import *
-from con2mongo.optOnMongo import *
+from user_unit import *
+from optOnMongo import *
 import time
 if __name__=="__main__":
-    driver = getLoginDriver(18330274826,523581600)
+    driver = getLoginDriver(18330274826)
     time.sleep(3)
     headers = getHeaders(driver)
     db_uri = "mongodb://yangze01:123@localhost:27017/?authSource=admin"
@@ -15,9 +15,10 @@ if __name__=="__main__":
     try:
         old_user_unit = userUnit()
         old_user_unit.user_unit[user_ID]="123"
-
+        #connect2Mongo
         opt = optOnMongo()
         print opt.connect2Mongo(db_uri,db_name)
+        print opt.insertUser2Mongo(opt.db,old_user_unit.user_unit)
 
         while queue:
 
