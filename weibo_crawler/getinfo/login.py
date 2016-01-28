@@ -11,6 +11,14 @@ sys.setdefaultencoding('utf-8')
 # the test push
 
 def getLoginDriver(username,password):
+    '''
+        description:use the selenium to get the driver of a user's driver
+        input:
+            username:the username of a sina_user
+            password:the password of a sina_user
+        output:
+            return the driver with a user's Cookie
+    '''
     driver = webdriver.Chrome()
 
     # go to the weibo login page
@@ -26,6 +34,13 @@ def getLoginDriver(username,password):
 
 #get headers with cookie
 def getHeaders(driver):
+    '''
+        description:get the headers with a user's Cookie
+        input:
+            driver:the chrome driver of the return value of getLoginDriver
+        output:
+            return the headers with a user's Cookie
+    '''
     ck=[item["name"]+"="+item["value"] for item in driver.get_cookies()]
     ckstr=";".join(item for item in ck)
     print ckstr

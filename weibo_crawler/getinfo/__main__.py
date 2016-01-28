@@ -5,7 +5,7 @@ from user_unit import *
 from collections import deque
 
 if __name__=="__main__":
-    driver = getLoginDriver(18330274826)
+    driver = getLoginDriver("18330274826","523581600")
     time.sleep(3)
     headers = getHeaders(driver)
 #   init two struct:queue and set
