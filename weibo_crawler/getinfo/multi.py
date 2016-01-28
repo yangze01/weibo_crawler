@@ -27,7 +27,7 @@ def get_headerlist(userdict):
     for (k,v) in userdict.items():
         a.append(get_headerstr(k,v))
     return a
-
+   
 if __name__=="__main__":
 
     headerlist=get_headerlist(a)#返回headers池
