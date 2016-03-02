@@ -24,14 +24,14 @@ from login import *
 from analysisAttributesPage import *
 from con2mongo.blogUnit import *
 from con2mongo.optOnMongo import *
+from createMultiCookies.getRandomCookie import *
 #import pdb
 #sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/' + '..'))
 
-
 #********************-----------------********************#
 
 #********************-----------------********************#
-class analisysBlogPage(analisysAttributePage, blogUnit):
+class analisysBlogPage(analisysAttributePage, blogUnit, getRandomCookie):
     '''
         set functions for analisys blog page , and get blog attributes and others in blogUnit.blog_unit
         like :
@@ -40,6 +40,7 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
     def __init__(self):
         analisysAttributePage.__init__(self)
         blogUnit.__init__(self)
+        getRandomCookie.__init__(self)
         ##optOnMongo.__init__(self)
         self.oneBlogAllContentDict = {
             "blog_id": "",
@@ -63,6 +64,8 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         self.countNum = ''
         self.optOnMongoInstance = optOnMongo()
         self.getBlogsCount = 0
+        self.visitPageCount = 0
+        self.userIDList = list()
         #startBlogAnalysisWork(self, user_id_list)
         self.user_id_list = ''
         self.sinaNetHeader = ''
@@ -96,7 +99,7 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
 
 
     #-----------------********************-----------------#
-    def startBlogAnalysisWork(self, user_id_list):
+    def startBlogAnalysisWork(self, user_id_list, usernamePoolDir):
         '''
             description:
                 start analisys work
@@ -107,17 +110,23 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         '''
 
         self.user_id_list = user_id_list
-        self.sinaNetHeader = getHeaders(getLoginDriver('usename', 'password'))
-        
+        #self.sinaNetHeader = getHeaders(getLoginDriver('usename', 'password'))
+        #create header pool
+        self.sinaHeaderList = getRandomCookie.createCookiePool(self, \
+                                usernamePoolDir \
+                                )
+        self.sinaNetHeader = getRandomCookie.getOneRandomCookie(self,  self.sinaHeaderList)
+
         self.db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=lab"
         self.db_name = "lab"
         self.optOnMongoInstance.connect2Mongo(self.db_uri, self.db_name)
         print self.optOnMongoInstance.db
-        self.user_id = '1991303247'
-        self.visitIntoUserBlog(self.sinaNetHeader, self.user_id, self.optOnMongoInstance)
-        print self.getBlogsCount
-        #for self.user_id in self.user_id_list:
-        #    visitIntoUserBlog(self.sinaNetHeader, self.user_d)
+        for self.user_id in self.user_id_list:
+            self.visitIntoUserBlog(self.sinaNetHeader, \
+                                    self.user_id, \
+                                    self.optOnMongoInstance)
+        print 'get blog number: %d' % self.getBlogsCount
+        print 'visited page number: %d' % self.visitPageCount
 
 
     #-----------------********************-----------------#
@@ -147,10 +156,10 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         self.blogPage = self.response.read() #get_data(self.blogCurrentPageUrl, self.sinaNetHeader)
 
         self.blogPageNumber = self.getPageNumber(self.blogPage)
-        print "blog page number: %d" % self.blogPageNumber
+        ##print "blog page number: %d" % self.blogPageNumber
         ##self.getOnePageBlogs('./get_blogcont/currentBlogPage.html')
         if self.blogPageNumber > 0:
-            for self.countNum in range(2):#(self.blogPageNumber):
+            for self.countNum in range(self.blogPageNumber): #range(2):#
                 self.countNum = self.countNum+1
                 self.blogCurrentPageUrl = self.blogInitPageUrl + "?page=" + "%d" % self.countNum
                 print self.blogCurrentPageUrl
@@ -182,7 +191,11 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         '''
         self.optOnMongoInstance = optOnMongoInstance
         self.blogText = blogPage
-
+        self.visitPageCount += 1
+        #selecte a random header every 4 pages
+        if self.visitPageCount%4 == 0:
+            self.sinaNetHeader = getRandomCookie.getOneRandomCookie(self, self.sinaHeaderList)
+            time.sleep(random.randint(2,10))
         ##self.db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=lab"
         ##self.db_name = "lab"
         ##self.optOnMongoInstance.connect2Mongo(self.db_uri, self.db_name)
@@ -243,14 +256,17 @@ class analisysBlogPage(analisysAttributePage, blogUnit):
         #get blog address
         self.blogAddressPattern = re.compile("""(?<=\[位置\]<a href=).*?(?=</a>)""")
         if self.blogAddressPattern.findall(self.oneBlogAllContent):
-            self.oneBlogAllContentDict['blog_address'] = self.blogAddressPattern.findall(self.oneBlogAllContent)[0]
-            self.blogAddressPattern = re.compile("""(?<=">).*""")
-            self.oneBlogAllContentDict['blog_address'] = self.blogAddressPattern.findall(self.oneBlogAllContentDict['blog_address'])[0]
-            self.blogAddressPattern = re.compile("""(?<=<a href=).*?(?=>显示地图</a>)""")
             self.patternContTamp = self.blogAddressPattern.findall(self.oneBlogAllContent)[0]
-            self.blogAddressPattern = re.compile("""(?<=center=).*?(?=&amp)""")
-            self.patternContTamp = self.blogAddressPattern.findall(self.patternContTamp)[0]
-            self.oneBlogAllContentDict['blog_address'] = self.oneBlogAllContentDict['blog_address'] + self.patternContTamp
+            self.blogAddressPattern = re.compile("""(?<=">).*""")
+            if self.blogAddressPattern.findall(self.patternContTamp):
+                self.oneBlogAllContentDict['blog_address'] = self.blogAddressPattern.findall(self.patternContTamp)[0]
+            self.blogAddressPattern = re.compile("""(?<=<a href=).*?(?=>显示地图</a>)""")
+            if self.blogAddressPattern.findall(self.oneBlogAllContent):
+                self.patternContTamp = self.blogAddressPattern.findall(self.oneBlogAllContent)[0]
+                self.blogAddressPattern = re.compile("""(?<=center=).*?(?=&amp)""")
+                if self.blogAddressPattern.findall(self.patternContTamp):
+                    self.patternContTamp = self.blogAddressPattern.findall(self.patternContTamp)[0]
+                    self.oneBlogAllContentDict['blog_address'] = self.oneBlogAllContentDict['blog_address'] + self.patternContTamp
             ##print "blog_address :%s" % self.oneBlogAllContentDict['blog_address']
         else:
             self.oneBlogAllContentDict['blog_address'] = 'no address'

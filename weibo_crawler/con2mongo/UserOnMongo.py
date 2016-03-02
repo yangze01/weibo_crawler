@@ -14,7 +14,7 @@
 import pymongo
 from pymongo import MongoClient
 import time
-from userUnit import *
+from user_Unit import *
 import pdb
 
 
@@ -22,7 +22,7 @@ import pdb
 #********************-----------------********************#
 
 #********************-----------------********************#
-class optOnMongo(object):
+class UseroptOnMongo(object):
     '''
         operations on mongodb in python,
         like connect, insert, find, updata, delete

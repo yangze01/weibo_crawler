@@ -1,3 +1,4 @@
+#-*- coding: UTF-8 -*-
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
@@ -28,6 +29,13 @@ def getLoginDriver(username,password):
     inputUsername.send_keys(username)
     inputPassword = driver.find_element_by_xpath("//input[@type='password']")
     inputPassword.send_keys(password)
+    inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
+#    a = raw_input("please input the code:")
+#    inputCode =a
+    print len(inputCode)
+    while len(inputCode)!=3:
+        print len(inputCode)
+        inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
     inputSubmit = driver.find_element_by_name("submit")
     inputSubmit.click()
     return driver

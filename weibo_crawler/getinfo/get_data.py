@@ -4,9 +4,11 @@ import urllib
 import urllib2
 import cookielib
 import re
-from user_unit import *
+import random
+from user_Unit import *
 def get_data(this_url,headers):
-    '''description:
+    '''
+        description:
             get data from webpage
         input:
             this_url:the page to be crawler
@@ -37,7 +39,7 @@ def get_pageNum(data):
     else:
         return 1
 
-def get_fans(userid,headers):
+def get_fans(userid,optHeaderlist):
     '''
     description:
         get user's fans list
@@ -45,6 +47,7 @@ def get_fans(userid,headers):
         userid:the user's id
         headers:the headers of a sina_weibo cookie
     '''
+    headers = optHeaderlist.getOneRandomCookie()
     catch_url = "http://weibo.cn/"+userid+"/fans?page="
     idnset = set()
     home_page = catch_url+'1'
@@ -53,7 +56,11 @@ def get_fans(userid,headers):
     print page
     re_id = '<a href="http://weibo.cn/u/\d{0,11}">[^<].*?[^>]</a>'
     pattern = re.compile(re_id,re.S)
+    countpageNum = 0
+
     for i in range(1,page):
+        if countpageNum%5 == 0:
+            headers = optHeaderlist.getOneRandomCookie()
         this_url = catch_url+str(i)
         data = get_data(this_url,headers)
         items = re.findall(pattern,data)
@@ -62,7 +69,7 @@ def get_fans(userid,headers):
             idnset.add(item[27:37])
     return idnset
 
-def get_follow(userid,headers):
+def get_follow(userid,optHeaderlist):
     '''
     description:
         get user's follow set
@@ -70,6 +77,7 @@ def get_follow(userid,headers):
         userid:the user's id
         headers:the headers of a sina_weibo cookie
     '''
+    headers = optHeaderlist.getOneRandomCookie()
     catch_url = "http://weibo.cn/"+userid+"/follow?page="
     idnset=set()
     home_page = catch_url+'1'
@@ -78,7 +86,10 @@ def get_follow(userid,headers):
     print page
     re_id = '<a href="http://weibo.cn/u/\d{0,11}">[^<].*?[^>]</a>'
     pattern = re.compile(re_id,re.S)
+    countpageNum = 0
     for i in range(1,page):
+        if countpageNum%5 == 0:
+            headers = optHeaderlist.getOneRandomCookie()
         this_url = catch_url+str(i)
         data = get_data(this_url,headers)
         items = re.findall(pattern,data)
@@ -111,7 +122,7 @@ def get_all(fansset,followset):
     '''
     return fansset|followset
 
-def get_relation(userid,headers):
+def get_relation(userid,optHeaderlist):
     '''
     description:
         get the user's relation
@@ -122,8 +133,8 @@ def get_relation(userid,headers):
         return a dict of relation
     '''
     relation = dict()
-    fans_set = get_fans(userid,headers)
-    follow_set = get_follow(userid,headers)
+    fans_set = get_fans(userid,optHeaderlist)
+    follow_set = get_follow(userid,optHeaderlist)
 
     all_set = get_friends(fans_set,follow_set)
     friends_set = get_all(fans_set,follow_set)
@@ -134,7 +145,7 @@ def get_relation(userid,headers):
     relation["intersection"]=list(friends_set)
     return relation
 
-def get_userinfo(userid,headers):
+def get_userinfo(userid,optHeaderlist):
     '''
     description:
         get the user's relation
@@ -144,7 +155,7 @@ def get_userinfo(userid,headers):
     output:
         return a dict of userinfo
     '''
-
+    headers = optHeaderlist.getOneRandomCookie()
     userinfo=dict()
     this_url = "http://weibo.cn/"+userid+"/info"
     data = get_data(this_url,headers)
@@ -160,6 +171,7 @@ def get_userinfo(userid,headers):
     re_district="(?<=地区:).*?(?=<br/>)"
     re_birthday="(?<=生日:).*?(?=<br/>)"
     re_certimes="(?<=认证信息：).*?(?=<br/>)"
+    re_summary="(?<=简介:).*?(?=<br/>)"
 
     pat_vip = re.compile(re_vip,re.S)
     pat_username = re.compile(re_username,re.S)
@@ -168,6 +180,7 @@ def get_userinfo(userid,headers):
     pat_district = re.compile(re_district,re.S)
     pat_birthday = re.compile(re_birthday,re.S)
     pat_certimes = re.compile(re_certimes,re.S)
+    pat_summary = re.compile(re_summary,re.S)
     #if re.match(pat_vip,item):
     #    print re.findall(pat_vip,item)[0]
     if re.findall(pat_vip,item):
@@ -184,5 +197,7 @@ def get_userinfo(userid,headers):
         userinfo["birthday"] = re.findall(pat_birthday,item)[0]
     if re.findall(pat_certimes,item):
         userinfo["certimes"] = re.findall(pat_certimes,item)[0]
+    if re.findall(pat_summary,item):
+        userinfo["certimes"] = re.findall(pat_summary,item)[0]
     print userinfo
     return userinfo

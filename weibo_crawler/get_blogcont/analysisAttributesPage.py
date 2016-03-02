@@ -178,7 +178,7 @@ class analisysAttributePage(object):
             print "please set statueFlag at correct value '1:comment' and '2:repost'"
             return None
         if self.attributePageNumber > 1 :
-            for self.countNum in range(2):#self.attributePageNumber):
+            for self.countNum in range(self.attributePageNumber): #range(2):#
                 self.countNum = self.countNum + 1
                 self.currentBlogAttributePageUrl = self.blogAttributeUrl + "&page=%d" % self.countNum
                 self.req = urllib2.Request(self.currentBlogAttributePageUrl,headers=self.sinaNetHeader)
@@ -191,7 +191,7 @@ class analisysAttributePage(object):
                                             1)
                     self.getSubDict2MainDict(self.commentsSubDict, self.commentsMainDict)
                 elif self.statueFlag==2: #for repost
-                    print self.currentBlogAttributePageUrl
+                    ##print self.currentBlogAttributePageUrl
                     self.oneAttributeAllContentPattern = re.compile("""(?<=<div class="c">)<a href="/u/.*?(?=</span></div>)""")
                     self.repostsSubDict = self.getOnePageAttributes(self.blogAttributePage, \
                                             self.oneAttributeAllContentPattern, \
@@ -210,7 +210,7 @@ class analisysAttributePage(object):
                 ##self.commentsMainDict = self.commentsMainDict
                 self.getSubDict2MainDict(self.commentsSubDict, self.commentsMainDict)
             elif self.statueFlag==2: #for repost
-                print self.blogAttributeUrl
+                ##print self.blogAttributeUrl
                 self.oneAttributeAllContentPattern = re.compile("""(?<=<div class="c">)<a href="/u/.*?(?=</span></div>)""")
                 self.repostsSubDict = self.getOnePageAttributes(self.blogAttributePage, \
                                         self.oneAttributeAllContentPattern, \
