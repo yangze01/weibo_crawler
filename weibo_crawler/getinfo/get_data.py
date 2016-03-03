@@ -198,6 +198,6 @@ def get_userinfo(userid,optHeaderlist):
     if re.findall(pat_certimes,item):
         userinfo["certimes"] = re.findall(pat_certimes,item)[0]
     if re.findall(pat_summary,item):
-        userinfo["certimes"] = re.findall(pat_summary,item)[0]
+        userinfo["summary"] = re.findall(pat_summary,item)[0]
     print userinfo
     return userinfo
