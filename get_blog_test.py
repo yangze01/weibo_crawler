@@ -7,7 +7,7 @@
 #data: 2016-1-2
 #log:
 
-"""
+""" 
     the test manage on getting blog content in python
 """
 
