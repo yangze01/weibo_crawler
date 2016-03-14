@@ -33,7 +33,7 @@ def getLoginDriver(username,password):
 #    a = raw_input("please input the code:")
 #    inputCode =a
     print len(inputCode)
-    while len(inputCode)!=3:
+    while len(inputCode)<3:
         print len(inputCode)
         inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
     inputSubmit = driver.find_element_by_name("submit")

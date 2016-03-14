@@ -45,7 +45,7 @@ class userUnit(object):
     #     }
     def __init__(self):
         self.user_unit={
-            "user_ID":"",
+            #"user_ID":"",
             "_id":"",
             "userinfo":{},
             "relation":{}

@@ -172,6 +172,7 @@ def get_userinfo(userid,optHeaderlist):
     re_birthday="(?<=生日:).*?(?=<br/>)"
     re_certimes="(?<=认证信息：).*?(?=<br/>)"
     re_summary="(?<=简介:).*?(?=<br/>)"
+    re_tags = "(?<=标签:).*?(?=</div>)"
 
     pat_vip = re.compile(re_vip,re.S)
     pat_username = re.compile(re_username,re.S)
@@ -181,8 +182,10 @@ def get_userinfo(userid,optHeaderlist):
     pat_birthday = re.compile(re_birthday,re.S)
     pat_certimes = re.compile(re_certimes,re.S)
     pat_summary = re.compile(re_summary,re.S)
+    pat_tags = re.compile(re_tags,re.S)
     #if re.match(pat_vip,item):
     #    print re.findall(pat_vip,item)[0]
+
     if re.findall(pat_vip,item):
         userinfo["vip"] = re.findall(pat_vip,item)[0]
     if re.findall(pat_username,item):
@@ -199,5 +202,11 @@ def get_userinfo(userid,optHeaderlist):
         userinfo["certimes"] = re.findall(pat_certimes,item)[0]
     if re.findall(pat_summary,item):
         userinfo["summary"] = re.findall(pat_summary,item)[0]
+    if re.findall(pat_tags,item):
+        tags =  re.findall(pat_tags,item)[0]
+        re_tag = "(?<=\">).*?(?=</a>&nbsp;)"
+        pat_tag = re.compile(re_tag,re.S)
+        if re.findall(pat_tag,tags):
+            userinfo["tags"]=re.findall(pat_tag,tags)
     print userinfo
     return userinfo
