@@ -10,8 +10,8 @@
 """
     test the operates on mongodb in python
 """
-from blogUnit import *
-from optOnMongo import *
+from con2mongo.blogUnit import *
+from con2mongo.optOnMongo import *
 #********************-----------------********************#
 
 #********************-----------------********************#

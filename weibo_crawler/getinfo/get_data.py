@@ -5,7 +5,7 @@ import urllib2
 import cookielib
 import re
 import random
-from user_Unit import *
+from con2mongo.user_Unit import *
 def get_data(this_url,headers):
     '''
         description:
@@ -162,8 +162,10 @@ def get_userinfo(userid,optHeaderlist):
 
     re_allinfo='<div class="c">.*?<br/></div>'
     pattern = re.compile(re_allinfo,re.S)
-    item = re.findall(pattern,data)[0]
-
+    if(re.findall(pattern,data)):
+        item = re.findall(pattern,data)[0]
+    else:
+        return userinfo
     re_vip = "(?<=会员等级：).*?(?=&nbsp)"
     re_username="(?<=昵称:).*?(?=<br/>)"
     re_certificate="(?<=认证:).*?(?=<br/>)"

@@ -6,17 +6,16 @@
 #author: warrior  ,mail: oowarrioroo@163.com
 #data: 2016-1-3
 #log:
-
-from selenium import webdriver
+import re
+import os
+import sys
+import time
 import urllib
 import urllib2
-import cookielib
-import sys
-import os
-import time
 import datetime
-import re
-from login import *
+import cookielib
+from selenium import webdriver
+from createMultiCookies.login import *
 
 
 

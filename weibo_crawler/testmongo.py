@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #-*- coding: UTF-8 -*-
-from UserOnMongo import *
-from user_Unit import *
+from con2mongo.UserOnMongo import *
+from con2mongo.user_Unit import *
 
 
 db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=lab"

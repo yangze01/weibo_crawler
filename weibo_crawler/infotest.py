@@ -1,18 +1,12 @@
 #-*- coding: UTF-8 -*-
-from get_data import *
-from login import *
-from user_Unit import *
-from collections import deque
-from multi import *
 import time
-
+from getinfo.multi import *
+from getinfo.login import *
+from collections import deque
+from getinfo.get_data import *
+from getinfo.user_Unit import *
 if __name__=="__main__":
     userinfo=dict()
-    a=list()
-    a.append(1)
-    a.append(2)
-    a.append(3)
-    a.append(4)
     f = open("/home/john/visited.txt","w")
     f.write(str(a))
     f.close()

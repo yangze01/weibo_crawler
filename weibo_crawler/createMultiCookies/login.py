@@ -20,22 +20,32 @@ def getLoginDriver(username,password):
         output:
             return the driver with a user's Cookie
     '''
-    driver = webdriver.Chrome()
-
+    driver = webdriver.Firefox()
+    #driver = webdriver.Chrome()
     # go to the weibo login page
-    driver.get("http://login.weibo.cn/login/")
+    #driver.get("http://login.weibo.cn/login/")
+    driver.get("http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.5)")
     # find the element
-    inputUsername = driver.find_element_by_name("mobile")
+    #inputUsername = driver.find_element_by_name("mobile")
+    inputUsername = driver.find_element_by_name("username")
     inputUsername.send_keys(username)
+    time.sleep(1)
     inputPassword = driver.find_element_by_xpath("//input[@type='password']")
     inputPassword.send_keys(password)
-    inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
-    print len(inputCode)
-    while len(inputCode)!=4:
-        print len(inputCode)
-        inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
-    inputSubmit = driver.find_element_by_name("submit")
+    #inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
+    #inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
+#    a = raw_input("please input the code:")
+#    inputCode =a
+    # print len(inputCode)
+    # while len(inputCode)<3:
+    #     print len(inputCode)
+    #     inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
+    inputSubmit = driver.find_element_by_xpath("//input[@type='submit']")
+    time.sleep(1)
     inputSubmit.click()
+    time.sleep(3)
+    driver.get("http://weibo.cn/")
+    #time.sleep(1)
     return driver
 
 #get headers with cookie

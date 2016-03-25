@@ -20,7 +20,7 @@ import sys
 import os
 import time
 import re
-from login import *
+from createMultiCookies.login import *
 from analysisAttributesPage import *
 from con2mongo.blogUnit import *
 from con2mongo.optOnMongo import *

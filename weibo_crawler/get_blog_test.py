@@ -7,14 +7,14 @@
 #data: 2016-1-2
 #log:
 
-""" 
+"""
     the test manage on getting blog content in python
 """
-
+from get_blogcont.getlastdata import *
 
 from get_blogcont.analysisBlogPage import *
-usernamePoolDir = '/home/warrior/Coding/usernamePool.txt'
-userIDList = ['1929644930', '1497035431', '1991303247']
+usernamePoolDir = '/home/john/userpool1.txt'
+userIDList = list(get_visited("/home/john/visited1.txt"))
 analisysInstace = analisysBlogPage()
 analisysInstace.startBlogAnalysisWork(userIDList, usernamePoolDir)
 print analisysInstace.normalizeTimeFrom('今天 11:11')
