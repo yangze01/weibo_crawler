@@ -5,9 +5,9 @@ def get_visited(userdir):
     userread = f.read()
     a = idRE.findall(userread)
     f.close()
-    id = "1798370147"
+    id = "5357651574"
     if id in a:
-        a.remove("1798370147")
+        a.remove("5357651574")
     print(len(a))
     return set(a)
 

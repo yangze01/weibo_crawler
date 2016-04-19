@@ -1,15 +1,15 @@
 #-*- coding: UTF-8 -*-
 import time
-from getinfo.multi import *
-from getinfo.login import *
+from createMultiCookies.multi import *
+from createMultiCookies.login import *
 from collections import deque
 from getinfo.get_data import *
-from getinfo.user_Unit import *
+from con2mongo.user_Unit import *
 if __name__=="__main__":
     userinfo=dict()
-    f = open("/home/john/visited.txt","w")
-    f.write(str(a))
-    f.close()
+#    f = open("/home/john/visited.txt","w")
+#    f.write(str(a))
+#    f.close()
     f = open("/home/john/pythonspace/sina_crawler/weibo_crawler/getinfo/info.txt","r")
     data = f.read()
     print data
