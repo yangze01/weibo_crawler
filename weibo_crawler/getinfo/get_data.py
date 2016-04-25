@@ -6,6 +6,9 @@ import cookielib
 import re
 import random
 from con2mongo.user_Unit import *
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 def get_data(this_url,headers):
     '''
         description:

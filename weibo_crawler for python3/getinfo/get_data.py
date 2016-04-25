@@ -1,4 +1,4 @@
-#-*- coding: UTF-8 -*-
+
 from collections import deque
 import urllib
 #import urllib2
@@ -7,6 +7,8 @@ import urllib.request
 import re
 import random
 from con2mongo.user_Unit import *
+
+
 def get_data(this_url,headers):
     '''
         description:
@@ -40,7 +42,7 @@ def get_pageNum(data):
     else:
         return 1
 
-def getUserWithCondition(optHeaderlist,keyword="华北电力大学（保定）",gender="all",age="0",searchtype="all",isv = "all"):
+def getUserWithCondition(optHeaderlist,keyword=u"华北电力大学（保定）",gender="all",age="0",searchtype="all",isv = "all"):
     # keyword = "华北电力大学（保定）"
     # gender ="all"#all,f,m
     # age = "0" #18 22 29 39 40

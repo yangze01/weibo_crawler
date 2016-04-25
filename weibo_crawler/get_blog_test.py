@@ -11,10 +11,10 @@
     the test manage on getting blog content in python
 """
 from get_blogcont.getlastdata import *
-
 from get_blogcont.analysisBlogPage import *
-usernamePoolDir = '/home/john/userpool1.txt'
-userIDList = list(get_visited("/home/john/visited1.txt"))
-analisysInstace = analisysBlogPage()
-analisysInstace.startBlogAnalysisWork(userIDList, usernamePoolDir)
-print analisysInstace.normalizeTimeFrom('今天 11:11')
+# usernamePoolDir = '/home/john/userpool1.txt'
+# userIDList = list(get_visited("/home/john/visited1.txt"))
+# analisysInstace = analisysBlogPage()
+# analisysInstace.startBlogAnalysisWork(userIDList, usernamePoolDir)
+# print analisysInstace.normalizeTimeFrom('今天 11:11')
+if __name__=="__main__":

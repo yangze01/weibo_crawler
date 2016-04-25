@@ -12,7 +12,7 @@ import time
 
 if __name__=="__main__":
 
-    userlistdir = '/home/john/userpool.txt'
+    userlistdir = '/home/john/userpool2.txt'
     optHeaderlist = getRandomheaderlist()
     optHeaderlist.headerlist=optHeaderlist.get_headerlist(userlistdir)#返回headers池
     db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=university"
@@ -20,22 +20,22 @@ if __name__=="__main__":
     #db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=lab"
     #db_name = "lab"
     opt = UseroptOnMongo()
-    print opt.connect2Mongo(db_uri,db_name)
+    print(opt.connect2Mongo(db_uri,db_name))
     visited = set()
     queue = list()
-    #queue = get_queue("/home/john/queue.txt")#tmpqueue:爬取
+    # queue = get_queue("/home/john/queue.txt")#tmpqueue:爬取
     visited = get_visited("/home/john/visitedwithuniversity.txt")
-    queue=getUserWithCondition(optHeaderlist,keyword="南京大学",searchtype="scho")+get_queue("/home/john/queuewithuniversity.txt")
-    #queue.append('5357651574')
+    queue=getUserWithCondition(optHeaderlist,keyword="复旦大学",searchtype="scho")+get_queue("/home/john/queuewithuniversity.txt")
+    # queue.append('1182391231')
 
     flag1 = True
     i=2000
-    print len(queue)
+    print(len(queue))
     try:
         while queue:
             # i=i-1
             catch_id = queue.pop()#取出待爬取的id
-            print "the id will be read:"+str(catch_id)
+            print("the id will be read:"+str(catch_id))
             if catch_id not in visited:
                 visited |= {catch_id}  # 标记为已访问
 
@@ -43,15 +43,16 @@ if __name__=="__main__":
                 tmp_userUnit.user_unit["_id"]=catch_id
                 tmp_userUnit.user_unit["userinfo"] = get_userinfo(catch_id,optHeaderlist)
 
-                if(len(queue)>=9000):
+                if(len(queue)>=12000):
                     queue=list(set(queue))
+                #    queue=queue[3000:]
                     flag1 = False
                 if(flag1):
                     tmp_userUnit.user_unit["relation"] = get_relation(catch_id,optHeaderlist)
                     queue = tmp_userUnit.user_unit["relation"]["fans"]+queue
                 opt.insertUser2Mongo(opt.db,tmp_userUnit.user_unit)
-                print "the queue len is: "+str(len(queue))
-            print "the visited len is: "+str(len(visited))
+                print("the queue len is: "+str(len(queue)))
+            print("the visited len is: "+str(len(visited)))
         f1 = open("/home/john/visitedwithuniversity.txt","w")
         f1.write(str(visited))
         f1.close()
@@ -67,4 +68,4 @@ if __name__=="__main__":
         f2.write(str(queue))
         f2.close()
     else:
-        print "OK"
+        print("OK")

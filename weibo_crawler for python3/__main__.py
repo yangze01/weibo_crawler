@@ -25,7 +25,7 @@ if __name__=="__main__":
     queue = list()
     #queue = get_queue("/home/john/queue.txt")#tmpqueue:爬取
     visited = get_visited("/home/john/visitedwithuniversity.txt")
-    queue=getUserWithCondition(optHeaderlist,keyword="南京大学",searchtype="scho")+get_queue("/home/john/queuewithuniversity.txt")
+    queue=getUserWithCondition(optHeaderlist,keyword=u"南京大学",searchtype="scho")+get_queue("/home/john/queuewithuniversity.txt")
     #queue.append('5357651574')
 
     flag1 = True

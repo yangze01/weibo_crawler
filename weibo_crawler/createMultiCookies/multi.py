@@ -17,9 +17,9 @@ class getRandomheaderlist():
             output:
                 return the headers of a sina_user
         '''
-        driver = getLoginDriver(u,p)
+        ckstr = get_ckstr(u,p)
         time.sleep(3)
-        headers = getHeaders(driver)
+        headers = getHeaders(ckstr)
         return headers
 
     def get_headerlist(self,userdictdir):
@@ -51,7 +51,11 @@ class getRandomheaderlist():
                 print 'the psw error'
             print self.usernametmp[0],self.pswtmp[0]
             self.userline = self.userdiropen.readline()
-            self.headerlist.append(self.get_headerstr(self.usernametmp,self.pswtmp))
+            self.tmpheader_str = self.get_headerstr(self.usernametmp[0],self.pswtmp[0])
+            while len(self.tmpheader_str['Cookie'])<100:
+                self.tmpheader_str = self.get_headerstr(self.usernametmp[0],self.pswtmp[0])
+            self.headerlist.append(self.tmpheader_str)
+            print len(self.headerlist)
         return self.headerlist
 
     def getOneRandomCookie(self):

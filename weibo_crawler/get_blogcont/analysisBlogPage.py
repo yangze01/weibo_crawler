@@ -143,7 +143,6 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomCookie):
                     mongodb db instance
             output:
                 none
-
         '''
         self.optOnMongoInstance = optOnMongoInstance
         self.blogInitPageUrl = "http://weibo.cn/" + user_id + "/profile"
@@ -205,7 +204,8 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomCookie):
         self.oneBlogAllContentPattern = re.compile("""(?<=<div class="c" id=)"M_\w+"><div><span class="ctt">.*?(?=</div></div>)""")
         if self.oneBlogAllContentPattern.findall(self.blogText):
             for self.oneBlogAllContent in self.oneBlogAllContentPattern.findall(self.blogText):
-                self.blog_unit = self.getOneBlog(self.oneBlogAllContent, self.optOnMongoInstance)##self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.getOneBlog(self.oneBlogAllContent))
+                self.blog_unit = self.getOneBlog(self.oneBlogAllContent, self.optOnMongoInstance)
+                ##self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.getOneBlog(self.oneBlogAllContent))
                 ##print self.blog_unit
                 self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.blog_unit)
                 self.getBlogsCount = self.getBlogsCount + 1
