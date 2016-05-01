@@ -86,8 +86,8 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomheaderlist):
         print self.optOnMongoInstance.db
         visited = get_visited("/home/john//visited/blogvisited.txt")
         # visited = set()
-        queue = get_queue("/home/john/queue/blogqueue.txt")
-        i=10000
+        queue = get_queue("/home/john/queue/blogqueue.txt")[2210:]
+        i=1000
         try:
             while i:
                 print i
