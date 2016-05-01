@@ -167,22 +167,26 @@ class analisysAttributePage(object):
         self.response = urllib2.urlopen(self.req)
         self.blogAttributePage = self.response.read() #get_data(self.blogCurrentPageUrl, self.sinaNetHeader)
 
-
         self.attributePageNumber = self.getPageNumber(self.blogAttributePage)
         if self.statueFlag==1:
+
             print "comment page number: %d" % self.attributePageNumber
         elif self.statueFlag==2:
+
             print "repost page number: %d" % self.attributePageNumber
         else :
             print "please set statueFlag at correct value '1:comment' and '2:repost'"
             return None
         if self.attributePageNumber > 1 :
+            if self.attributePageNumber > 10:
+                self.attributePageNumber = 10
             for self.countNum in range(self.attributePageNumber): #range(2):#
                 self.countNum = self.countNum + 1
                 self.currentBlogAttributePageUrl = self.blogAttributeUrl + "&page=%d" % self.countNum
                 self.req = urllib2.Request(self.currentBlogAttributePageUrl,headers=self.sinaNetHeader)
                 self.response = urllib2.urlopen(self.req)
-                self.blogAttributePage = self.response.read() #get_data(self.blogCurrentPageUrl, self.sinaNetHeader)
+                self.blogAttributePage = self.response.read()
+                #get_data(self.blogCurrentPageUrl, self.sinaNetHeader)
                 if self.statueFlag==1: #for comment
                     self.oneAttributeAllContentPattern = re.compile("""(?<=<div class="c" id=)"C_\w+">.*?(?=</span></div>)""")
                     self.commentsSubDict = self.getOnePageAttributes(self.blogAttributePage, \
@@ -363,6 +367,7 @@ class analisysAttributePage(object):
         #get comment device and time
         self.commentTimeDevicePattern = re.compile("""(?<=<span class="ct">).*""")
         self.oneCommentContentDict['time'], self.oneCommentContentDict['device'] = self.getTimeDevice(self.oneCommentContentDict, self.oneCommentAllContent, self.commentTimeDevicePattern)
+        print "get one blogrr3"
         ##print "comment_time :%s" % self.oneCommentContentDict['time']
         ##print "comment_device :%s" % self.oneCommentContentDict['device']
         return self.oneCommentContentDict
@@ -449,13 +454,17 @@ class analisysAttributePage(object):
         self.oneTimeDevicePattern = oneTimeDevicePattern
         self.oneAllContent = oneAllContent
         self.oneContentDict = oneContentDict
-
-        self.patternContTamp = self.oneTimeDevicePattern.findall(self.oneAllContent)[0]
+        if self.oneTimeDevicePattern.findall(self.oneAllContent):
+            self.patternContTamp = self.oneTimeDevicePattern.findall(self.oneAllContent)[0]
         ##print self.patternContTamp
         self.oneTimePattern = re.compile(""".*?(?=&nbsp;)""")
-        self.oneContentDict['time'] = self.oneTimePattern.findall(self.patternContTamp)[0]
+        if self.oneTimePattern.findall(self.patternContTamp):
+            self.oneContentDict['time'] = self.oneTimePattern.findall(self.patternContTamp)[0]
+            self.oneContentDict['time'] = self.normalizeTimeFrom(self.oneContentDict['time'])
+
         ##print self.oneContentDict['time']
-        self.oneContentDict['time'] = self.normalizeTimeFrom(self.oneContentDict['time'])
+
+#        self.oneContentDict['time'] = self.normalizeTimeFrom(self.oneContentDict['time'])
         ##print self.oneContentDict['time']
         ##print "time :%s" % oneContentDict['time'].encode('utf-8')
         self.oneDevicePattern = re.compile("""(?<=&nbsp;来自).*""")
@@ -469,6 +478,7 @@ class analisysAttributePage(object):
                 self.oneContentDict['device'] = self.oneDevicePattern.findall(self.patternContTamp)[0]
         else:
             self.oneContentDict['device'] = 'no device'
+
         return self.oneContentDict['time'], self.oneContentDict['device']
         ##print "device :%s" % oneContentDict['device'].encode('utf-8')
 

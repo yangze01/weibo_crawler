@@ -1,6 +1,8 @@
 #!/usr/bin/python
 #-*- coding: UTF-8 -*-
 
+# from get_blogcont.analysisBlogPage import *
+
 from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
@@ -12,6 +14,7 @@ from get_blogcont.analysisAttributesPage import *
 from con2mongo.optOnMongo import *
 from getinfo.getlastdata import *
 from con2mongo.blogUnit import *
+from getinfo.getlastdata import *
 from selenium import webdriver
 import urllib
 import urllib2
@@ -81,10 +84,39 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomheaderlist):
         self.db_name = "blog"
         self.optOnMongoInstance.connect2Mongo(self.db_uri, self.db_name)
         print self.optOnMongoInstance.db
+        visited = get_visited("/home/john//visited/blogvisited.txt")
+        # visited = set()
+        queue = get_queue("/home/john/queue/blogqueue.txt")
+        i=10000
+        try:
+            while i:
+                print i
+                catch_id = queue.pop()
+                print "the id will be read:"+str(catch_id)
+                if catch_id not in visited:
+                    visited |= {catch_id}  # 标记为已访问
+                    self.visitIntoUserBlog(self.sinaNetHeader,catch_id,self.optOnMongoInstance)
+                    print("the queue len is: "+str(len(queue)))
+                i=i-1
+                print("the visited len is: "+str(len(visited)))
 
-
-        self.visitIntoUserBlog(self.sinaNetHeader,"1836781292",self.optOnMongoInstance)
-
+            f1 = open("/home/john/visited/blogvisited.txt","w")
+            f1.write(str(visited))
+            f1.close()
+            f2 = open("/home/john/queue/blogqueue.txt","w")
+            f2.write(str(queue))
+            f2.close()
+        except:
+            #退出保存
+            print "except"
+            f1 = open("/home/john/visited/blogvisited.txt","w")
+            f1.write(str(visited))
+            f1.close()
+            f2 = open("/home/john/queue/blogqueue.txt","w")
+            f2.write(str(queue))
+            f2.close()
+        else:
+            print("OK")
 
 
 
@@ -115,7 +147,8 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomheaderlist):
             self.blogCurrentPageUrl = self.blogInitPageUrl
             self.req = urllib2.Request(self.blogCurrentPageUrl,headers=self.sinaNetHeader)
             self.response = urllib2.urlopen(self.req)
-            self.blogPage = self.response.read() #get_data(self.blogCurrentPageUrl, self.sinaNetHeader)
+            self.blogPage = self.response.read()
+            # get_data(self.blogCurrentPageUrl, self.sinaNetHeader)
             self.getOnePageBlogs(self.blogPage, self.optOnMongoInstance)
 
     def getOnePageBlogs(self,blogPage,optOnMongoInstance):
@@ -123,19 +156,22 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomheaderlist):
         self.optOnMongoInstance = optOnMongoInstance
         self.blogText = blogPage
         self.visitPageCount += 1
-
         if self.visitPageCount%4 == 0:
             self.sinaNetHeader = getRandomheaderlist.getOneRandomCookie(self)
             time.sleep(random.randint(2,10))
         self.oneBlogAllContentPattern = re.compile("""(?<=<div class="c" id=)"M_\w+"><div><span class="ctt">.*?(?=</div></div>)""")
         if self.oneBlogAllContentPattern.findall(self.blogText):
             print len(self.oneBlogAllContentPattern.findall(self.blogText))
-            for self.oneBlogAllContent in self.oneBlogAllContentPattern.findall(self.blogText):
-                self.blog_unit = self.getOneBlog(self.oneBlogAllContent, self.optOnMongoInstance)
-                ##self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.getOneBlog(self.oneBlogAllContent))
-                ##print self.blog_unit
-                self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.blog_unit)
-                self.getBlogsCount = self.getBlogsCount + 1
+            self.oneBlogAllContent = self.oneBlogAllContentPattern.findall(self.blogText)[0]
+            self.blog_unit = self.getOneBlog(self.oneBlogAllContent, self.optOnMongoInstance)
+            self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.blog_unit)
+            self.getBlogsCount = self.getBlogsCount + 1
+            # for self.oneBlogAllContent in self.oneBlogAllContentPattern.findall(self.blogText):
+            #     self.blog_unit = self.getOneBlog(self.oneBlogAllContent, self.optOnMongoInstance)
+            #     ##self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.getOneBlog(self.oneBlogAllContent))
+            #     ##print self.blog_unit
+            #     self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.blog_unit)
+            #     self.getBlogsCount = self.getBlogsCount + 1
         else:
             print "no blog"
 
@@ -166,6 +202,7 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomheaderlist):
         else:
             print "get blog error!!"
             return None
+
         ##print "textContentTamp: %s" % self.textContentTamp.encode('utf-8')
         super(analisysBlogPage, self).getTextContent(self.oneBlogAllContentDict, self.textContentTamp)
         ##print "blog_content :%s" % self.oneBlogAllContentDict['content']['text_content'].encode('utf-8')
@@ -188,30 +225,37 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomheaderlist):
             self.oneBlogAllContentDict['blog_address'] = 'no address'
             ##print 'no address'
         #get blog time and device
-        self.blogTimeDevicePattern = re.compile("""(?<=<span class="ct">).*?(?=</span>)""")
-        self.oneBlogAllContentDict['time'] ,self.oneBlogAllContentDict['device'] = super(analisysBlogPage, self).getTimeDevice(self.oneBlogAllContentDict, self.oneBlogAllContent, self.blogTimeDevicePattern)
 
+        self.blogTimeDevicePattern = re.compile("""(?<=<span class="ct">).*?(?=</span>)""")
+
+        self.oneBlogAllContentDict['time'] ,self.oneBlogAllContentDict['device'] = super(analisysBlogPage, self).getTimeDevice(self.oneBlogAllContentDict, self.oneBlogAllContent, self.blogTimeDevicePattern)
         ##print "blog_device :%s" % self.oneBlogAllContentDict['device'].encode('utf-8')
         ##print "blog_time :%s" % self.oneBlogAllContentDict['time'].encode('utf-8')
         #get blog attitude
         self.blogAttitudePattern = re.compile("""<a href="http://weibo.cn/attitude.*?赞\[[0-9]+(?=\]</a>)""")
-        self.patternContTamp = self.blogAttitudePattern.findall(self.oneBlogAllContent)[0]
+        if self.blogAttitudePattern.findall(self.oneBlogAllContent):
+            self.patternContTamp = self.blogAttitudePattern.findall(self.oneBlogAllContent)[0]
                     #print self.patternContTamp
         self.blogAttitudePattern = re.compile("""(?<=赞\[).*""")
-        self.oneBlogAllContentDict['blog_attitude'] = self.blogAttitudePattern.findall(self.patternContTamp)[0]
+        if self.blogAttitudePattern.findall(self.patternContTamp):
+            self.oneBlogAllContentDict['blog_attitude'] = self.blogAttitudePattern.findall(self.patternContTamp)[0]
         ##print "blog_attitude :%s" % self.oneBlogAllContentDict['blog_attitude']
         #get repost url
         self.blogRepostUrlPattern = re.compile("""<a href="http://weibo.cn/repost.*?转发\[[0-9]+(?=\]</a>)""")
-        self.patternContTamp = self.blogRepostUrlPattern.findall(self.oneBlogAllContent)[0]
+        if self.blogRepostUrlPattern.findall(self.oneBlogAllContent):
+            self.patternContTamp = self.blogRepostUrlPattern.findall(self.oneBlogAllContent)[0]
         self.blogRepostUrlPattern = re.compile("""(?<=<a href=").*?(?=;|&|"|\?^u)""")
-        self.repost_url['repost_url'] = self.blogRepostUrlPattern.findall(self.patternContTamp)[0]
+        if self.blogRepostUrlPattern.findall(self.patternContTamp):
+            self.repost_url['repost_url'] = self.blogRepostUrlPattern.findall(self.patternContTamp)[0]
         ##print "repost_url :%s" % self.oneBlogAllContentDict['repost_url']
         #get comment url
+
         self.blogCommentUrlPattern = re.compile("""<a href="http://weibo.cn/comment.*?评论\[[0-9]+(?=\]</a>)""")
-        self.patternContTamp = self.blogCommentUrlPattern.findall(self.oneBlogAllContent)[0]
+        if self.blogCommentUrlPattern.findall(self.oneBlogAllContent):
+            self.patternContTamp = self.blogCommentUrlPattern.findall(self.oneBlogAllContent)[0]
         self.blogCommentUrlPattern = re.compile("""(?<=<a href=").*?(?=;|&|"|\?^u)""")
         self.comment_url['comment_url'] = self.blogCommentUrlPattern.findall(self.patternContTamp)[0]
-        ##print "comment_url :%s" % self.oneBlogAllContentDict['comment_url']
+        # print "comment_url :%s" % self.comment_url['comment_url']
         #get comment
         self.CommentsContentDict = []
         self.CommentsContentDict = analisysAttributePage.getBlogAttributes(self, self.sinaNetHeader, self.comment_url['comment_url'], 1)
@@ -229,3 +273,8 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomheaderlist):
 
         ##del self.blog_unit['_id']
         return self.blog_unit
+
+if __name__=="__main__":
+    userlistdir = '/home/john/userpool/userpool3.txt'
+    starta = analisysBlogPage()
+    starta.startanalysis(userlistdir)

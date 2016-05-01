@@ -125,20 +125,21 @@ def get_sex(db):
     return [m_count,f_count]
 
 if __name__=="__main__":
-    db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=university"
-    db_name = "university"
-    the_chinese_zodiac_count = {'猪': 2389, '鸡': 2303, '马': 2291, '兔': 1723, '虎': 1695, '牛': 1918, \
-                                '猴': 2403, '龙': 2095, '蛇': 1812, '羊': 1997, '鼠': 2153, '狗': 3062}
-    the_zadiac_count = {'双子座': 2197, '双鱼座': 2348, '摩羯座': 3278, '天秤座': 2569, '射手座': 2126,\
-                        '天蝎座': 2592, '水瓶座': 2257, '处女座': 2490, '金牛座': 2087, '白羊座': 2159,\
-                        '狮子座': 2407, '巨蟹座': 2136}
-    the_decades_count = [16, 47, 109, 488, 2171, 6626, 14848, 1294, 242]
-    print(the_chinese_zodiac_count)
-    print(the_zadiac_count)
-    print(the_decades_count)
+    db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=blog"
+    db_name = "blog"
     xlient = MongoClient(db_uri)
     db = xlient[db_name]
     print(db)
+    myiter = db.blog.find({},{"blog.device":1})
+    print(1)
+    i=0
+    length=myiter.count()
+    print("the length is :"+str(length))
+    while(i<length):
+        print(i)
+        tmpdevice = myiter[i]["blog"]["device"]
+        print(tmpdevice)
+        i=i+1
     # myiter = db.user.find({"userinfo.tags":{"$exists":1}},{"userinfo":1})
     # for item in myiter[5]["userinfo"]["tags"]:
     #     print(item)

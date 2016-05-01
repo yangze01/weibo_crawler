@@ -12,7 +12,7 @@ import time
 
 if __name__=="__main__":
 
-    userlistdir = '/home/john/userpool2.txt'
+    userlistdir = '/home/john/userpool/userpool2.txt'
     optHeaderlist = getRandomheaderlist()
     optHeaderlist.headerlist=optHeaderlist.get_headerlist(userlistdir)#返回headers池
     db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=university"
@@ -24,9 +24,11 @@ if __name__=="__main__":
     visited = set()
     queue = list()
     # queue = get_queue("/home/john/queue.txt")#tmpqueue:爬取
-    visited = get_visited("/home/john/visitedwithuniversity.txt")
-    queue=getUserWithCondition(optHeaderlist,keyword="复旦大学",searchtype="scho")+get_queue("/home/john/queuewithuniversity.txt")
+    visited = get_visited("/home/john//visited/visitedwithuniversity.txt")
+    # queue = getUserWithCondition(optHeaderlist,keyword="复旦大学",searchtype="scho")+get_queue("/home/john/queue/queuewithuniversity.txt")
+    queue = get_queue("/home/john/queue/queuewithuniversity.txt")
     # queue.append('1182391231')
+
 
     flag1 = True
     i=2000
@@ -53,18 +55,18 @@ if __name__=="__main__":
                 opt.insertUser2Mongo(opt.db,tmp_userUnit.user_unit)
                 print("the queue len is: "+str(len(queue)))
             print("the visited len is: "+str(len(visited)))
-        f1 = open("/home/john/visitedwithuniversity.txt","w")
+        f1 = open("/home/john/visited/visitedwithuniversity.txt","w")
         f1.write(str(visited))
         f1.close()
-        f2 = open("/home/john/queuewithuniversity.txt","w")
+        f2 = open("/home/john/queue/queuewithuniversity.txt","w")
         f2.write(str(queue))
         f2.close()
     except:
         #退出保存
-        f1 = open("/home/john/visitedwithuniversity.txt","w")
+        f1 = open("/home/john/visited/visitedwithuniversity.txt","w")
         f1.write(str(visited))
         f1.close()
-        f2 = open("/home/john/queuewithuniversity.txt","w")
+        f2 = open("/home/john/queue/queuewithuniversity.txt","w")
         f2.write(str(queue))
         f2.close()
     else:

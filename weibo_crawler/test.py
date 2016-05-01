@@ -6,6 +6,7 @@ from random import choice
 import urllib
 import urllib2
 import random
+from queue import Queue
 proxies = [
 	{'http': 'http://45.79.217.88:3128'},
 	# {'http': 'http://xx.xx.xx.xx:xx'},
@@ -53,5 +54,5 @@ user_agent_list = [
 	"Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko",
 	"Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 7.0; InfoPath.3; .NET CLR 3.1.40767; Trident/6.0; en-IN)"
 ]
-ua = random.choice(user_agent_list)
-print ua
+# ua = random.choice(user_agent_list)
+# print ua

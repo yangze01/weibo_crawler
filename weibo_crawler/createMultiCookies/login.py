@@ -22,8 +22,8 @@ def get_ckstr(username,password):
         output:
             return the driver with a user's Cookie
     '''
-    # driver = webdriver.Firefox()
-    driver = webdriver.Chrome()
+    driver = webdriver.Firefox()
+    # driver = webdriver.Chrome()
     # go to the weibo login page
     #driver.get("http://login.weibo.cn/login/")
     driver.get("http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.5)")
