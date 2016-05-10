@@ -13,7 +13,7 @@ sys.setdefaultencoding('utf-8')
 # Create a new instance of the Chrome driver
 # the test push
 
-def get_ckstr(username,password):
+def get_ckstr(username,password,logindriver):
     '''
         description:use the selenium to get the driver of a user's driver
         input:
@@ -22,11 +22,20 @@ def get_ckstr(username,password):
         output:
             return the driver with a user's Cookie
     '''
-    # driver = webdriver.Firefox()
-    driver = webdriver.Chrome()
+    if logindriver == 1:
+        driver = webdriver.Firefox()
+    elif logindriver == 2:
+        driver = webdriver.Chrome()
+    elif logindriver == 3:
+        driver = webdriver.PhantomJS()
+    elif logindriver == 4:
+        driver = webdriver.Remote("http://localhost:4444/wd/hub", webdriver.DesiredCapabilities.HTMLUNITWITHJS)
+
+        # driver = webdriver.Remote()
     # go to the weibo login page
     #driver.get("http://login.weibo.cn/login/")
     driver.get("http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.5)")
+    # driver.get("http://login.sina.com.cn/")
     # find the element
     time.sleep(1)
     #inputUsername = driver.find_element_by_name("mobile")
@@ -35,7 +44,7 @@ def get_ckstr(username,password):
     time.sleep(1)
     inputPassword = driver.find_element_by_xpath("//input[@type='password']")
     inputPassword.send_keys(password)
-    time.sleep(1)
+    time.sleep(2)
     #inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
     #inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
 #    a = raw_input("please input the code:")
@@ -44,16 +53,23 @@ def get_ckstr(username,password):
     # while len(inputCode)<3:
     #     print len(inputCode)
     #     inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
+    # inputCode = driver.find_element_by_name("door")
+    # if inputCode:
+    #     while len(inputCode)<5:
+    #         print len(inputCode)
+    #         inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
+    # time.sleep(5)
     inputSubmit = driver.find_element_by_xpath("//input[@type='submit']")
-    time.sleep(2)
     inputSubmit.click()
     time.sleep(1)
+    time.sleep(2)
     driver.get("http://weibo.cn/")
     time.sleep(2)
     ck=[item["name"]+"="+item["value"] for item in driver.get_cookies()]
     ckstr=";".join(item for item in ck)
     while(len(ckstr)<=100):
         driver.get("http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.5)")
+        # driver.get("http://login.sina.com.cn/")
         time.sleep(1)
         driver.get("http://weibo.cn/")
         time.sleep(2)
@@ -62,6 +78,7 @@ def get_ckstr(username,password):
         if(len(ckstr)>100):
             return ckstr
         driver.get("http://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.5)")
+        # driver.get("http://login.sina.com.cn/")
         # find the element
         time.sleep(1)
         #inputUsername = driver.find_element_by_name("mobile")
@@ -79,11 +96,16 @@ def get_ckstr(username,password):
         # while len(inputCode)<3:
         #     print len(inputCode)
         #     inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
+        # inputCode = driver.find_element_by_name("door")
+        # if　inputCode:
+        #     while len(inputCode)<3:
+        #         print len(inputCode)
+        #         inputCode = driver.find_element_by_xpath("//input[@type='text' and @name='code']").get_attribute("value")
+        # time.sleep(5)
         inputSubmit = driver.find_element_by_xpath("//input[@type='submit']")
         time.sleep(2)
         inputSubmit.click()
         time.sleep(1)
-
         time.sleep(2)
         driver.get("http://weibo.cn/")
         time.sleep(2)

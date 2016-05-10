@@ -4,11 +4,12 @@ from createMultiCookies.login import *
 from con2mongo.user_Unit import *
 import random
 import re
+import time
 class getRandomheaderlist():
     def __init__(self):
         self.headerlist=list()
 
-    def get_headerstr(self,u,p):
+    def get_headerstr(self,u,p,logindriver):
         '''
             description:use the get Login to get headers with Cookie
             input:
@@ -17,12 +18,12 @@ class getRandomheaderlist():
             output:
                 return the headers of a sina_user
         '''
-        ckstr = get_ckstr(u,p)
+        ckstr = get_ckstr(u,p,logindriver)
         time.sleep(3)
         headers = getHeaders(ckstr)
         return headers
 
-    def get_headerlist(self,userdictdir):
+    def get_headerlist(self,userdictdir,logindriver):
         '''
             description:get a list of Hearders
             input:
@@ -51,9 +52,11 @@ class getRandomheaderlist():
                 print 'the psw error'
             print self.usernametmp[0],self.pswtmp[0]
             self.userline = self.userdiropen.readline()
-            self.tmpheader_str = self.get_headerstr(self.usernametmp[0],self.pswtmp[0])
+            self.tmpheader_str = self.get_headerstr(self.usernametmp[0],self.pswtmp[0],logindriver)
+            # time.sleep(3)
             while len(self.tmpheader_str['Cookie'])<100:
-                self.tmpheader_str = self.get_headerstr(self.usernametmp[0],self.pswtmp[0])
+                self.tmpheader_str = self.get_headerstr(self.usernametmp[0],self.pswtmp[0],logindriver)
+                # time.sleep(3)
             self.headerlist.append(self.tmpheader_str)
             print len(self.headerlist)
         return self.headerlist

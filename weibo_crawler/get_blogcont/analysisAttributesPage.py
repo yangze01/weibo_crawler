@@ -367,7 +367,6 @@ class analisysAttributePage(object):
         #get comment device and time
         self.commentTimeDevicePattern = re.compile("""(?<=<span class="ct">).*""")
         self.oneCommentContentDict['time'], self.oneCommentContentDict['device'] = self.getTimeDevice(self.oneCommentContentDict, self.oneCommentAllContent, self.commentTimeDevicePattern)
-        print "get one blogrr3"
         ##print "comment_time :%s" % self.oneCommentContentDict['time']
         ##print "comment_device :%s" % self.oneCommentContentDict['device']
         return self.oneCommentContentDict

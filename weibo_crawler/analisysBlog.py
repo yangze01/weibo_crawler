@@ -16,6 +16,9 @@ from getinfo.getlastdata import *
 from con2mongo.blogUnit import *
 from getinfo.getlastdata import *
 from selenium import webdriver
+import threading
+import time
+import random
 import urllib
 import urllib2
 import cookielib
@@ -23,11 +26,15 @@ import sys
 import os
 import time
 import re
-class analisysBlogPage(analisysAttributePage, blogUnit, getRandomheaderlist):
-    def __init__(self):
+class analisysBlogPage(threading.Thread,analisysAttributePage, blogUnit, getRandomheaderlist):
+    def __init__(self,userpooldir,threadname,logintype):
+        threading.Thread.__init__(self)
         analisysAttributePage.__init__(self)
         blogUnit.__init__(self)
         getRandomheaderlist.__init__(self)
+        self.userpooldir = userpooldir
+        self.threadname = threadname
+        self.logintype = logintype
         self.oneBlogAllContentDict = {
             "blog_id": "",
             "blog_address": "",
@@ -77,28 +84,32 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomheaderlist):
         # self.blogAttitudePattern = ''
         # self.blogRepostUrlPattern = ''
         # self.blogCommentUrlPattern = ''
-    def startanalysis(self,usernamePoolDir):
-        getRandomheaderlist.headerlist = getRandomheaderlist.get_headerlist(self,usernamePoolDir)
+    def run(self):
+        print self.userpooldir
+        global queue
+        global visited
+        getRandomheaderlist.headerlist = getRandomheaderlist.get_headerlist(self,self.userpooldir,self.logintype)
         self.sinaNetHeader = getRandomheaderlist.getOneRandomCookie(self)
-        self.db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=blog"
-        self.db_name = "blog"
+        self.db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=test"
+        self.db_name = "test"
         self.optOnMongoInstance.connect2Mongo(self.db_uri, self.db_name)
         print self.optOnMongoInstance.db
-        visited = get_visited("/home/john//visited/blogvisited.txt")
-        # visited = set()
-        queue = get_queue("/home/john/queue/blogqueue.txt")[2210:]
         i=1000
         try:
             while i:
-                print i
-                catch_id = queue.pop()
-                print "the id will be read:"+str(catch_id)
-                if catch_id not in visited:
-                    visited |= {catch_id}  # 标记为已访问
-                    self.visitIntoUserBlog(self.sinaNetHeader,catch_id,self.optOnMongoInstance)
-                    print("the queue len is: "+str(len(queue)))
-                i=i-1
-                print("the visited len is: "+str(len(visited)))
+                if queue:
+                    print i
+                    CONDITION.acquire()
+                    catch_id = queue.pop()
+                    CONDITION.release()
+                    print self.threadname+"   the id will be read:"+str(catch_id)
+                    if catch_id not in visited:
+                        self.user_id = catch_id
+                        visited |= {catch_id}  # 标记为已访问
+                        self.visitIntoUserBlog(self.sinaNetHeader,catch_id,self.optOnMongoInstance)
+                        print("the queue len is: "+str(len(queue)))
+                    i=i-1
+                    print("the visited len is: "+str(len(visited)))
 
             f1 = open("/home/john/visited/blogvisited.txt","w")
             f1.write(str(visited))
@@ -123,7 +134,7 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomheaderlist):
     def visitIntoUserBlog(self,sinaNetHeader,user_id,optOnMongoInstance):
         self.optOnMongoInstance = optOnMongoInstance
         self.blogInitPageUrl = "http://weibo.cn/" + user_id + "/profile"
-        self.sinaNetHeader = sinaNetHeader
+        self.sinaNetHeader = getRandomheaderlist.getOneRandomCookie(self)
 
         self.countNum = 0
         self.req = urllib2.Request(self.blogInitPageUrl,headers = self.sinaNetHeader)
@@ -161,11 +172,14 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomheaderlist):
             time.sleep(random.randint(2,10))
         self.oneBlogAllContentPattern = re.compile("""(?<=<div class="c" id=)"M_\w+"><div><span class="ctt">.*?(?=</div></div>)""")
         if self.oneBlogAllContentPattern.findall(self.blogText):
-            print len(self.oneBlogAllContentPattern.findall(self.blogText))
+
+            print "weibo numbers :"len(self.oneBlogAllContentPattern.findall(self.blogText))
+
             self.oneBlogAllContent = self.oneBlogAllContentPattern.findall(self.blogText)[0]
             self.blog_unit = self.getOneBlog(self.oneBlogAllContent, self.optOnMongoInstance)
             self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.blog_unit)
             self.getBlogsCount = self.getBlogsCount + 1
+            
             # for self.oneBlogAllContent in self.oneBlogAllContentPattern.findall(self.blogText):
             #     self.blog_unit = self.getOneBlog(self.oneBlogAllContent, self.optOnMongoInstance)
             #     ##self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.getOneBlog(self.oneBlogAllContent))
@@ -275,6 +289,16 @@ class analisysBlogPage(analisysAttributePage, blogUnit, getRandomheaderlist):
         return self.blog_unit
 
 if __name__=="__main__":
-    userlistdir = '/home/john/userpool/userpool3.txt'
-    starta = analisysBlogPage()
-    starta.startanalysis(userlistdir)
+    CONDITION = threading.Condition()
+    visited = get_visited("/home/john/visited/blogvisited.txt")
+    queue = get_queue("/home/john/queue/blogqueue.txt")
+    userlistdir1 = '/home/john/userpool/userpooltmp1.txt'
+    userlistdir2 = '/home/john/userpool/userpooltmp2.txt'
+    userlistdir3 = '/home/john/userpool/userpool3.txt'
+
+    thread1 = analisysBlogPage(userlistdir1,"thread1",1)
+    thread2 = analisysBlogPage(userlistdir2,"thread2",2)
+    thread3 = analisysBlogPage(userlistdir3,"thread3",2)
+    thread1.start()
+    thread2.start()
+    # thread3.start()

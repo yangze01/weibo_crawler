@@ -3,7 +3,7 @@
 #函数
 import threading
 import time
-
+import random
 # threading.active_count()  #返回当前线程对象Thread的个数
 # threading.enumerate()  #返回当前运行的线程对象Thread(包括后台的)的list
 # threading.Condition()  #返回条件变量对象的工厂函数, 主要用户线程的并发
@@ -30,15 +30,33 @@ import time
 # isAlive(): 返回线程是否活动的。
 # getName(): 返回线程名。
 # setName(): 设置线程名。
-def test_thread(count) :
-    while count > 0 :
-        print "count = %d" % count
-        count = count - 1
-        time.sleep(1)
-def main() :
-    my_thread = threading.Thread(target = test_thread, args = (10, ))
-    my_thread.start()
-    my_thread.join()
+class analisysblog(threading.Thread):
+    def __init__(self,userpooldir,name):
+        threading.Thread.__init__(self)
+        self.name = name
+        self.userpooldir=userpooldir
+    def run(self):
+        print self.userpooldir
+        global queue
+        global visited
+        i=500
+        while i:
+            if queue:
+                CONDITION.acquire()
+                catch_id = queue.pop()
+                CONDITION.release()
+                if catch_id not in visited:
+                    # time.sleep(random.random())
+                    print self.name + "the catch_id is :%d "%catch_id
+            i=i-1
 
 if __name__ == '__main__':
-    main()
+    CONDITION = threading.Condition()
+    queue = range(1300)
+    visited = range(20)
+    userpooldir1 = "/home/userpool/userpool1.txt"
+    userpooldir2 = "/home/userpool/userpool2.txt"
+    a=analisysblog(userpooldir1,"thread1  ")
+    b=analisysblog(userpooldir2,"thread2  ")
+    a.start()
+    b.start()
