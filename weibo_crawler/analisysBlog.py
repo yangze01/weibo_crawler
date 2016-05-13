@@ -90,11 +90,11 @@ class analisysBlogPage(threading.Thread,analisysAttributePage, blogUnit, getRand
         global visited
         getRandomheaderlist.headerlist = getRandomheaderlist.get_headerlist(self,self.userpooldir,self.logintype)
         self.sinaNetHeader = getRandomheaderlist.getOneRandomCookie(self)
-        self.db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=test"
-        self.db_name = "test"
+        self.db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=blog"
+        self.db_name = "blog"
         self.optOnMongoInstance.connect2Mongo(self.db_uri, self.db_name)
         print self.optOnMongoInstance.db
-        i=1000
+        i=10000
         try:
             while i:
                 if queue:
@@ -179,7 +179,7 @@ class analisysBlogPage(threading.Thread,analisysAttributePage, blogUnit, getRand
             self.blog_unit = self.getOneBlog(self.oneBlogAllContent, self.optOnMongoInstance)
             self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.blog_unit)
             self.getBlogsCount = self.getBlogsCount + 1
-            
+
             # for self.oneBlogAllContent in self.oneBlogAllContentPattern.findall(self.blogText):
             #     self.blog_unit = self.getOneBlog(self.oneBlogAllContent, self.optOnMongoInstance)
             #     ##self.optOnMongoInstance.insertBlog2Mongo(self.optOnMongoInstance.db, self.getOneBlog(self.oneBlogAllContent))
@@ -292,13 +292,13 @@ if __name__=="__main__":
     CONDITION = threading.Condition()
     visited = get_visited("/home/john/visited/blogvisited.txt")
     queue = get_queue("/home/john/queue/blogqueue.txt")
-    userlistdir1 = '/home/john/userpool/userpooltmp1.txt'
-    userlistdir2 = '/home/john/userpool/userpooltmp2.txt'
+    userlistdir1 = '/home/john/userpool/userpool1.txt'
+    userlistdir2 = '/home/john/userpool/userpool2.txt'
     userlistdir3 = '/home/john/userpool/userpool3.txt'
 
     thread1 = analisysBlogPage(userlistdir1,"thread1",1)
     thread2 = analisysBlogPage(userlistdir2,"thread2",2)
-    thread3 = analisysBlogPage(userlistdir3,"thread3",2)
+    thread3 = analisysBlogPage(userlistdir3,"thread3",3)
     thread1.start()
     thread2.start()
     # thread3.start()

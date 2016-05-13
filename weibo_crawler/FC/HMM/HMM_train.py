@@ -47,11 +47,11 @@ def getList(input_str):
     return outpout_str
 
 def Output():
-    start_fp = file(PROB_START,'w')
-    emit_fp = file(PROB_EMIT,'w')
-    trans_fp = file(PROB_TRANS,'w')
+    start_fp = open(PROB_START,'w')
+    emit_fp = open(PROB_EMIT,'w')
+    trans_fp = open(PROB_TRANS,'w')
 
-    print "len(word_set) = %s " % (len(word_set))
+    print ("len(word_set) = %s " % (len(word_set)))
     for key in Pi_dic:
         '''
         if Pi_dic[key] != 0:
@@ -60,7 +60,8 @@ def Output():
             Pi_dic[key] = 0
         '''
         Pi_dic[key] = Pi_dic[key] * 1.0 / line_num
-    print >>start_fp,Pi_dic
+    # print >>start_fp,Pi_dic
+    print(start_fp,Pi_dic)
 
     for key in A_dic:
         for key1 in A_dic[key]:
@@ -71,7 +72,8 @@ def Output():
                 A_dic[key][key1] = 0
             '''
             A_dic[key][key1] = A_dic[key][key1] / Count_dic[key]
-    print >>trans_fp,A_dic
+    # print >>trans_fp,A_dic
+    print(trans_fp,A_dic)
 
     for key in B_dic:
         for word in B_dic[key]:
@@ -83,28 +85,30 @@ def Output():
             '''
             B_dic[key][word] = B_dic[key][word] / Count_dic[key]
 
-    print >> emit_fp,B_dic
+    # print >> emit_fp,B_dic
+    print(emit_fp,B_dic)
     start_fp.close()
     emit_fp.close()
     trans_fp.close()
 
 
 def main():
-    if len(sys.argv) != 2:
-        print >> stderr,"Usage [%s] [input_data] " % (sys.argv[0])
-        sys.exit(0)
-    ifp = file(sys.argv[1])
+    # if len(sys.argv) != 2:
+    #     print >> stderr,"Usage [%s] [input_data] " % (sys.argv[0])
+    #     sys.exit(0)
+    # ifp = file(sys.argv[1])
+    ifp = open('/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/RenMinData.txt_utf8','r')
     init()
     global word_set
     global line_num
     for line in ifp:
         line_num += 1
         if line_num % 10000 == 0:
-            print line_num
+            print(line_num)
 
         line = line.strip()
         if not line:continue
-        line = line.decode("utf-8","ignore")
+        # line = line.decode("utf-8","ignore")
 
         word_list = []
         for i in range(len(line)):
@@ -128,7 +132,8 @@ def main():
                 else:
                     A_dic[line_state[i-1]][line_state[i]] += 1
                     Count_dic[line_state[i]] += 1
-                    if not B_dic[line_state[i]].has_key(word_list[i]):
+                #    if not B_dic[line_state[i]].has_key(word_list[i]):
+                    if not word_list[i] in B_dic[line_state[i]]:
                         B_dic[line_state[i]][word_list[i]] = 0.0
                     else:
                         B_dic[line_state[i]][word_list[i]] += 1

@@ -5,12 +5,12 @@ import sys
 import pdb
 
 def load_model(f_name):
-    ifp = file(f_name, 'rb')
+    ifp = open(f_name, 'rb')
     return eval(ifp.read())
 
-prob_start = load_model("prob_start.py")
-prob_trans = load_model("prob_trans.py")
-prob_emit = load_model("prob_emit.py")
+prob_start = load_model("/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/prob_start.py")
+prob_trans = load_model("/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/prob_trans.py")
+prob_emit = load_model("/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/prob_emit.py")
 
 
 def viterbi(obs, states, start_p, trans_p, emit_p):
@@ -38,19 +38,24 @@ def cut(sentence):
 if __name__ == "__main__":
     test_str = u"长春市长春节讲话。"
     prob,pos_list = cut(test_str)
-    print test_str
-    print pos_list
+    print(test_str)
+    print(pos_list)
     test_str = u"他说的确实在理."
     prob,pos_list = cut(test_str)
-    print test_str
-    print pos_list
+    print(test_str)
+    print(pos_list)
 
     test_str = u"毛主席万岁。"
     prob,pos_list = cut(test_str)
-    print test_str
-    print pos_list
+    print(test_str)
+    print(pos_list)
 
     test_str = u"我有一台电脑。"
     prob,pos_list = cut(test_str)
-    print test_str
-    print pos_list
+    print(test_str)
+    print(pos_list)
+
+    test_str = u'这并不是一种最好的处理技术，因为这有可能低估或高估真实概率。我的名字叫杨泽，在华北电力大学上学'
+    prob,pos_list = cut(test_str)
+    print(test_str)
+    print(pos_list)
