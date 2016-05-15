@@ -130,16 +130,20 @@ if __name__=="__main__":
     xlient = MongoClient(db_uri)
     db = xlient[db_name]
     print(db)
-    myiter = db.blog.find({},{"blog.device":1})
-    print(1)
-    i=0
-    length=myiter.count()
-    print("the length is :"+str(length))
-    while(i<length):
-        print(i)
-        tmpdevice = myiter[i]["blog"]["device"]
-        print(tmpdevice)
-        i=i+1
+    myiter = db.blog.find({},{"blog.content.text_content":1})
+    print(myiter[4]['blog']['content']['text_content'])
+    # i=1000
+    # while i:
+    #     i=i-1
+    #     print(myiter[i]['blog']['content']['text_content'])
+    # i=0
+    # length=myiter.count()
+    # print("the length is :"+str(length))
+    # while(i<length):
+    #     print(i)
+    #     tmpdevice = myiter[i]["blog"]["device"]
+    #     print(tmpdevice)
+    #     i=i+1
     # myiter = db.user.find({"userinfo.tags":{"$exists":1}},{"userinfo":1})
     # for item in myiter[5]["userinfo"]["tags"]:
     #     print(item)

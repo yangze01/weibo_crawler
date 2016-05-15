@@ -173,7 +173,7 @@ class analisysBlogPage(threading.Thread,analisysAttributePage, blogUnit, getRand
         self.oneBlogAllContentPattern = re.compile("""(?<=<div class="c" id=)"M_\w+"><div><span class="ctt">.*?(?=</div></div>)""")
         if self.oneBlogAllContentPattern.findall(self.blogText):
 
-            print "weibo numbers :"len(self.oneBlogAllContentPattern.findall(self.blogText))
+        #    print "weibo numbers :"len(self.oneBlogAllContentPattern.findall(self.blogText))
 
             self.oneBlogAllContent = self.oneBlogAllContentPattern.findall(self.blogText)[0]
             self.blog_unit = self.getOneBlog(self.oneBlogAllContent, self.optOnMongoInstance)

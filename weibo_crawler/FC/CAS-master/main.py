@@ -12,4 +12,3 @@ while True :
 	sentence = raw_input('\nInput a Chinese Sentence: ').decode('utf-8')
 	senList = ngram.senSegment(sentence)
 	print '/'.join(senList)
-	

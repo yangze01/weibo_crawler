@@ -1,6 +1,15 @@
 
 import re,math
+from pymongo import MongoClient
+import pymongo
+import time
+import json
+import time
+import pdb
 wordbag={}
+def load_model(f_name):
+    ifp = open(f_name, 'rb')
+    return eval(ifp.read())
 def viterbi(obs,states,prob_start,prob_trans,prob_emit):
 	"""
 	obs=observed values
@@ -157,18 +166,43 @@ def cut(sentence,allow_oov=False):
 		for chunk in re_han.split(sentence):
 			if chunk:
 				yield chunk
-if __name__== "__main__":
-	states=['B','M','E','S']
-	prob_trans,prob_start,prob_emit,wordbag=train()
-	ref=[line for line in open("/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/RenMinData.txt_utf8").readlines()[:10]]
-	for i,line in enumerate(open("/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/RenMinData.txt_utf8").readlines()[:10]):
-		print("#"*60)
-		obs=[char for char in line.rstrip("\n")]
-		print("Ref segment:",ref[i].rstrip("\n"))
-		raw_seg_with_dict=[seg for chunk in cut(line.rstrip("\n")) for seg in raw_seg(chunk,wordbag) ]
-		print("Raw segment:","  ".join(raw_seg_with_dict))
-		output,SQ=viterbi(obs,states,prob_start,prob_trans,prob_emit)
-		print("HMM segment:",output)
+# if __name__== "__main__":
+#	states=['B','M','E','S']
+#	prob_trans,prob_start,prob_emit,wordbag=train()
+	# ref=[line for line in open("/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/RenMinData.txt_utf8").readlines()[:10]]
+	# for i,line in enumerate(open("/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/RenMinData.txt_utf8").readlines()[:10]):
+	# 	print("#"*60)
+	# 	obs=[char for char in line.rstrip("\n")]
+	# 	print("Ref segment:",ref[i].rstrip("\n"))
+	# 	raw_seg_with_dict=[seg for chunk in cut(line.rstrip("\n")) for seg in raw_seg(chunk,wordbag) ]
+	# 	print("Raw segment:","  ".join(raw_seg_with_dict))
+	# 	output,SQ=viterbi(obs,states,prob_start,prob_trans,prob_emit)
+	# 	print("HMM segment:",output)
+if __name__ == "__main__":
+    # for char in test_str:
+    #     print(char)
+    #prob_trans,prob_start,prob_emit,wordbag=train()
+    prob_start = load_model("/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/prob_start.py")
+    prob_trans = load_model("/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/prob_trans.py")
+    prob_emit = load_model("/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/prob_emit.py")
+
+    db_uri = "mongodb://labUser:aaaaaa@localhost:27017/?authSource=blog"
+    db_name = "blog"
+    xlient = MongoClient(db_uri)
+    db = xlient[db_name]
+    print(db)
+    myiter = db.blog.find({"blog.content.text_content":{"$exists":1}},{"blog.content.text_content":1})
+    length = 1000
+    print("##")
+    print(myiter[7]['blog']['content']['text_content'])
+    test_str = myiter[7]['blog']['content']['text_content'].strip().strip('#')
+	#test_str    = "新华网东京电记者吴谷丰据日本共同社28日报道，日本行政改革担当大臣稻田朋美当天参拜了供奉有二战甲级战犯牌位的靖国神社。她成为第四个参拜靖国神社的安倍内阁成员。靖国神社位于东京千代田区，供奉有包括东条英机在内的14名第二次世界大战甲级战犯的牌位。长期以来，日本部分政客参拜靖国神社，导致日本与中国、韩国等亚洲国家关系"
+    obs=[char for char in test_str]#.rstrip("\n")]
+    prob,pos_list=viterbi(obs,('B','M','E','S'),prob_start,prob_trans,prob_emit)
+    print("HMM segment:",prob)
+
+
+
 
 	# print("#Prob_start:",prob_start)
 	# print("#Prob_trans:",prob_trans)
