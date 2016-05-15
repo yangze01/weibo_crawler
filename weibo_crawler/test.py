@@ -11,6 +11,7 @@ import time
 import json
 import time
 import pdb
+#123123123
 def load_model(f_name):
     ifp=open(f_name,'rb')
     return eval(ifp.read())
@@ -27,6 +28,6 @@ def viterbi(obs,states,prob_start,prob_trans,prob_emit):
     v=[{}]
     path={}
     for state in states:
-        
+
         if obs[0] in prob_emit[state]:
             v[0][state]= math.exp(prob_start[state]*prob_emit[state][obs[0]])
