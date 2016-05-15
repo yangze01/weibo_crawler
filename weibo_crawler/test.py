@@ -27,6 +27,6 @@ def viterbi(obs,states,prob_start,prob_trans,prob_emit):
     v=[{}]
     path={}
     for state in states:
+        
         if obs[0] in prob_emit[state]:
             v[0][state]= math.exp(prob_start[state]*prob_emit[state][obs[0]])
-            
