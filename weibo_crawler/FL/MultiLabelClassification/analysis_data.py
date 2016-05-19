@@ -1,7 +1,5 @@
 # coding:utf-8
 
-__author__ = 'Jeremy'
-
 
 def get_labels_set():
     fr = open("labels_summary.txt","r")

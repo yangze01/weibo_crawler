@@ -97,47 +97,58 @@ def main():
     #     print >> stderr,"Usage [%s] [input_data] " % (sys.argv[0])
     #     sys.exit(0)
     # ifp = file(sys.argv[1])
-    ifp = open('/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/RenMinData.txt_utf8','r')
+    ifplist = list()
+    ifp1 = open('/home/john/pythonspace/sina_crawler/weibo_crawler/FC/HMM/RenMinData.txt_utf8','r')
+    ifp2 = open('/home/john/pythonspace/sina_crawler/weibo_crawler/FC/CAS-master/dict/dict1.txt','r')
+    ifp3 = open('/home/john/pythonspace/sina_crawler/weibo_crawler/FC/CAS-master/dict/dict2.txt','r')
+    ifp4 = open('/home/john/pythonspace/sina_crawler/weibo_crawler/FC/CAS-master/dict/EngWord.txt','r')
+    ifplist=[ifp1,ifp2,ifp3,ifp4]
+    # ifp = ifp1.read()+ifp2.read()
+
     init()
     global word_set
     global line_num
-    for line in ifp:
-        line_num += 1
-        if line_num % 10000 == 0:
-            print(line_num)
+    for ifp in ifplist:
+        for line in ifp:
+            line_num += 1
+            if line_num % 10000 == 0:
+                print(line_num)
 
-        line = line.strip()
-        if not line:continue
-        # line = line.decode("utf-8","ignore")
+            line = line.strip()
+            if not line:continue
+            # line = line.decode("utf-8","ignore")
 
-        word_list = []
-        for i in range(len(line)):
-            if line[i] == " ":continue
-            word_list.append(line[i])
-        word_set = word_set | set(word_list)
+            word_list = []
+            for i in range(len(line)):
+                if line[i] == " ":continue
+                word_list.append(line[i])
+            word_set = word_set | set(word_list)
 
 
-        lineArr = line.split(" ")
-        line_state = []
-        for item in lineArr:
-            line_state.extend(getList(item))
-        #pdb.set_trace()
-        if len(word_list) != len(line_state):
-            print >> sys.stderr,"[line_num = %d][line = %s]" % (line_num, line.endoce("utf-8",'ignore'))
-        else:
-            for i in range(len(line_state)):
-                if i == 0:
-                    Pi_dic[line_state[0]] += 1
-                    Count_dic[line_state[0]] += 1
-                else:
-                    A_dic[line_state[i-1]][line_state[i]] += 1
-                    Count_dic[line_state[i]] += 1
-                #    if not B_dic[line_state[i]].has_key(word_list[i]):
-                    if not word_list[i] in B_dic[line_state[i]]:
-                        B_dic[line_state[i]][word_list[i]] = 0.0
+            lineArr = line.split(" ")
+            line_state = []
+            for item in lineArr:
+                line_state.extend(getList(item))
+            #pdb.set_trace()
+            if len(word_list) != len(line_state):
+                print >> sys.stderr,"[line_num = %d][line = %s]" % (line_num, line.endoce("utf-8",'ignore'))
+            else:
+                for i in range(len(line_state)):
+                    if i == 0:
+                        Pi_dic[line_state[0]] += 1
+                        Count_dic[line_state[0]] += 1
                     else:
-                        B_dic[line_state[i]][word_list[i]] += 1
+                        A_dic[line_state[i-1]][line_state[i]] += 1
+                        Count_dic[line_state[i]] += 1
+                    #    if not B_dic[line_state[i]].has_key(word_list[i]):
+                        if not word_list[i] in B_dic[line_state[i]]:
+                            B_dic[line_state[i]][word_list[i]] = 0.0
+                        else:
+                            B_dic[line_state[i]][word_list[i]] += 1
     Output()
-    ifp.close()
+    ifp1.close()
+    ifp2.close()
+    ifp3.close()
+    ifp4.close()
 if __name__ == "__main__":
     main()

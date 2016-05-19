@@ -1,5 +1,5 @@
 # coding=utf-8
-__author__ = 'Jeremy'
+# 
 from sklearn.preprocessing import LabelEncoder, MultiLabelBinarizer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.svm import LinearSVC

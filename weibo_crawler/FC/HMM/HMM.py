@@ -101,6 +101,7 @@ if __name__ == "__main__":
     xlient = MongoClient(db_uri)
     db = xlient[db_name]
     print(db)
+
     myiter = db.blog.find({"blog.content.text_content":{"$exists":1}},{"blog.content.text_content":1})
     length = 1000
     print("##")
@@ -115,12 +116,19 @@ if __name__ == "__main__":
         # print(pos_list)
         i=i+1
 
+    test_str = "在党的十二届六中全会通过的《关于社会主义精神文明建设指导方针的决议》指引下。"
+    # print(test_str)
+    # prob,pos_list = cut(test_str)
+    # print(prob)
     # test_str = "微卖 快来围观我的“微卖”小店，我又进了不少新货 http://t.cn/R4U3Dp1"
     # test_str = myiter[1000]['blog']['content']['text_content']
     # print(test_str)
+
+    print(test_str)
     prob,pos_list = cut(test_str)
     print(prob)
     print(pos_list)
+
     # while i:
     #     i=i-1
     #     test_str = myiter[1000]['blog']['content']['text_content'].strip()

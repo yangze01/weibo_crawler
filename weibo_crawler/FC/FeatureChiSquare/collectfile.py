@@ -8,6 +8,6 @@ def collectfile(srcpath,dstpath):
       for fn in os.listdir(path):
         tmp=os.path.splitext(fn)
         shutil.copy(os.path.join(path,fn),dstpath+tmp[0]+'-'+fp[-2:]+tmp[1])
- 
+
 if __name__ == '__main__':
   collectfile(srcpath,dstpath)

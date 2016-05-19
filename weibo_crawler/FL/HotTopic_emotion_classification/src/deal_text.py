@@ -12,7 +12,7 @@ import chardet
 def process(inp,outp):
     dict_1={}
     input_file= inp
-    
+
     f_in=open(input_file,'r')
     pos_1_lines=f_in.readlines()
     f_in.close()
@@ -37,7 +37,7 @@ def process(inp,outp):
         else:
             all_dict[dict_line] =1
     print len(all_dict)
-    
+
     output_file=outp
     f_save=open(output_file,'w')
     for k,v in dict_1.items():
@@ -54,11 +54,10 @@ def process(inp,outp):
         f_save.write("%s\t%s"%(f_flag,k))
         f_save.write("\n")
         f_save.flush()
-        
-    
+
+
 
 if __name__ == "__main__":
     input_file="train_2014.07.14.txt"
     output_file="flag_train_2014.07.14.txt"
     process(input_file,output_file)
-

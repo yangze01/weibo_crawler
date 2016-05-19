@@ -15,7 +15,7 @@ def writefeatures():
   for k,v in features_chisquare.items():
     out_data.write(str(k)+'\t')
 
-#sort 
+#sort
     tmp = sorted(v,key=lambda value: value[1])
     for a,b in tmp:
       out_data.write(a+':'+str(b)+',')
@@ -37,7 +37,7 @@ def calcFeatures(i,j):  #i(int)=class j(int)=word
   B=numpy.sum(narr[j,0:i])+numpy.sum(narr[j,i+1:])
   C=numpy.sum(narr[0:j,i])+numpy.sum(narr[j+1:,i])
   D=numpy.sum(narr) - numpy.sum(narr[j])-numpy.sum(narr[0:j,i]) - numpy.sum(narr[j+1:,i])
-  
+
   tmp.append((items[j][0],chisquare(A,B,C,D)))
 #  print A," ",B," ",C," ",D
 
@@ -111,5 +111,5 @@ for t in threads:
 
 for t in threads:
   t.join()
- 
+
 writefeatures()

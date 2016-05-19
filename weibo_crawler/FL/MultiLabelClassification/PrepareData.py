@@ -23,6 +23,3 @@ def print_label_result(mlb, lb, y_score):
         for i in label:
             print i,
         print
-
-
-

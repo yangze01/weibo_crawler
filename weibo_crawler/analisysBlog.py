@@ -292,13 +292,13 @@ if __name__=="__main__":
     CONDITION = threading.Condition()
     visited = get_visited("/home/john/visited/blogvisited.txt")
     queue = get_queue("/home/john/queue/blogqueue.txt")
-    userlistdir1 = '/home/john/userpool/userpool1.txt'
-    userlistdir2 = '/home/john/userpool/userpool2.txt'
-    userlistdir3 = '/home/john/userpool/userpool3.txt'
+    userlistdir1 = '/home/john/userpool/userpooltmp1.txt'
+    userlistdir2 = '/home/john/userpool/userpooltmp2.txt'
+    # userlistdir3 = '/home/john/userpool/userpool3.txt'
 
     thread1 = analisysBlogPage(userlistdir1,"thread1",1)
     thread2 = analisysBlogPage(userlistdir2,"thread2",2)
-    thread3 = analisysBlogPage(userlistdir3,"thread3",3)
+    # thread3 = analisysBlogPage(userlistdir3,"thread3",3)
     thread1.start()
     thread2.start()
     # thread3.start()

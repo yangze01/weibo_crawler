@@ -4,7 +4,7 @@ import os
 
 stopword={}
 
-global path 
+global path
 global outpath
 global stoppath
 
@@ -39,7 +39,7 @@ def datatrans():
   #initialize stopword dict
   input_data=codecs.open(stoppath,'r','utf-8')
   for line in input_data.readlines():
-    stopword[line[:-1]] = 0  
+    stopword[line[:-1]] = 0
 
   for l in os.listdir(path):
     dataop(l)
@@ -52,4 +52,3 @@ if __name__ == '__main__':
   outpath = sys.argv[2]
   stoppath = sys.argv[3]
   datatrans()
-               
