@@ -255,7 +255,7 @@ def get_userinfo(userid,optHeaderlist):
         if re.findall(pat_tag,tags):
             userinfo["tags"]=re.findall(pat_tag,tags)
     if re.findall(pat_study,data):
-        print "studyplace____________________________________________________________________________________________________________"
+        print "studyplace___________________________________________________________________________________________________________"
         studyitem = re.findall(pat_study,data)[0]
         print studyitem
         if re.findall(pat_schoolORwork,studyitem):
